@@ -3,6 +3,8 @@ import App from "../App";
 import Home from "../pages/Home";
 import Blogs from "../pages/Blogs";
 import BlogPages from "../pages/BlogPages";
+import BlogDisplay from "../pages/BlogDisplay";
+import BlogForm from "../pages/BlogForm";
 
 const router = createBrowserRouter([
   {
@@ -14,12 +16,16 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/blog",
+        path: "/addBlog",
+        element: <BlogForm />,
+      },
+      {
+        path: "/blogs",
         element: <Blogs />,
       },
       {
-        path: "/blog/:id",
-        element: <BlogPages />,
+        path: "/blogs/:id",
+        element: <BlogDisplay />,
       },
     ],
   },

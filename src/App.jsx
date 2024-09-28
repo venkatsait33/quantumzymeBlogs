@@ -4,9 +4,9 @@ import NavBar from "./components/NavBar";
 
 const App = () => {
   return (
-    <div className="container min-h-screen">
-      
-      <div className="relative mt-10">
+    <div className="min-h-screen ">
+      <NavBar/>
+      <div className="relative w-full h-full">
         <Outlet />
       </div>
     </div>
