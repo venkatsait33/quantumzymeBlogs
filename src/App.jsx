@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -9,6 +10,7 @@ const App = () => {
       <div className="relative w-full h-full">
         <Outlet />
       </div>
+      <Footer/>
     </div>
   );
 };

@@ -19,33 +19,43 @@ const Blogs = () => {
     fetchBlogs();
   }, []);
 
+  const limitDescription = (description, limit = 250) => {
+    return description.length > limit
+      ? `${description.slice(0, limit)}...`
+      : description;
+  };
+
   return (
-    <div className="max-w-4xl p-6 mx-auto mt-12">
+    <div className="grid max-w-4xl grid-cols-1 gap-6 p-6 mx-auto mt-12 sm:grid-cols-2 lg:grid-cols-2">
       {blogs.length === 0 ? (
-        <p>No blogs available.</p>
+        <div className="mt-10 text-center block-center">
+          <p className=" btn">No blogs available.</p>
+        </div>
       ) : (
         blogs.map((blog) => (
           <Link to={`/blogs/${blog.id}`} key={blog.id} className="mb-8">
-            <div className="shadow-xl card bg-base-100 w-96">
+            <div className="w-full h-full shadow-xl card bg-base-100">
               <figure>
                 <img
                   src={blog.coverImage}
-                  className="object-cover w-full h-64"
+                  alt={blog.title}
+                  className="object-cover w-full h-40"
                 />
               </figure>
-              <div className="card-body">
-                <h2 className="card-title">{blog.title}</h2>
-                <div className="flex items-center mb-4 justify-evenly">
-                  <p>
-                    <strong>Author:</strong> {blog.author}
-                  </p>
-                  <p>
-                    <strong>Date of Publishing:</strong> {blog.publishedDate}
-                  </p>
+              <div className="flex flex-col justify-between card-body ">
+                <h2 className="text-lg font-bold card-title">{blog.title}</h2>
+                <div className="flex items-center justify-between mb-2 text-sm">
+                  <p>{blog.author}</p>
+                  <p>{blog.publishedDate}</p>
                 </div>
-                <p className="p-2 overflow-hidden text-base text-ellipsis-2">
-                  {blog.description}
+                <p className="overflow-hidden text-ellipsis">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: limitDescription(blog.description),
+                    }}
+                  />
                 </p>
+                <p className="mt-2 font-semibold text-primary">Read More</p>
               </div>
             </div>
           </Link>

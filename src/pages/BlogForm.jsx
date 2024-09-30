@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import RichTextEditor from "../components/RichTextEditor";
+import { useNavigate } from "react-router-dom";
 
 const BlogForm = () => {
   const [title, setTitle] = useState("");
@@ -8,8 +9,10 @@ const BlogForm = () => {
   const [author, setAuthor] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
   const [description, setDescription] = useState("");
-  const [sections, setSections] = useState([]); // Combined sections
+  const [sections, setSections] = useState([]); // Array to store sections with image, title, and content
   const [reference, setReference] = useState("");
+  const [editorKey, setEditorKey] = useState(0);
+  const navigate = useNavigate();
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -20,12 +23,13 @@ const BlogForm = () => {
     });
   };
 
+  // Add section with image, imageTitle, and content as a new object in the sections array
   const addSection = () => {
-    setSections((prev) => [
-      ...prev,
+    setSections((prevSections) => [
+      ...prevSections,
       {
         type: "section",
-        file: null,
+        image: null,
         imageTitle: "",
         content: "",
         timestamp: Date.now(),
@@ -38,16 +42,16 @@ const BlogForm = () => {
     setSections(updatedSections);
   };
 
-  const handleImageChange = (index, key, value) => {
+  const handleFileChange = (index, file) => {
     const updatedSections = sections.map((section, i) =>
-      i === index ? { ...section, [key]: value } : section
+      i === index ? { ...section, image: file } : section
     );
     setSections(updatedSections);
   };
 
-  const handleFileChange = (index, file) => {
+  const handleImageTitleChange = (index, value) => {
     const updatedSections = sections.map((section, i) =>
-      i === index ? { ...section, file } : section
+      i === index ? { ...section, imageTitle: value } : section
     );
     setSections(updatedSections);
   };
@@ -67,18 +71,20 @@ const BlogForm = () => {
       coverImageBase64 = await fileToBase64(coverImageFile);
     }
 
-    const imagePromises = sections.map(async (section) => {
-      if (section.file) {
-        const base64Image = await fileToBase64(section.file);
+    // Process all sections to convert files to base64 and build the final structure
+    const processedSections = await Promise.all(
+      sections.map(async (section) => {
+        let imageBase64 = "";
+        if (section.image) {
+          imageBase64 = await fileToBase64(section.image);
+        }
         return {
-          imageUrl: base64Image,
+          image: imageBase64,
           imageTitle: section.imageTitle,
+          content: section.content,
         };
-      }
-      return null;
-    });
-
-    const imageBase64Array = await Promise.all(imagePromises);
+      })
+    );
 
     const blogData = {
       title,
@@ -86,8 +92,7 @@ const BlogForm = () => {
       author,
       publishedDate,
       description,
-      images: imageBase64Array.filter(Boolean), // Filter out nulls
-      content: sections.map((section) => section.content).filter(Boolean),
+      sections: processedSections, // Store the processed sections
       reference,
     };
 
@@ -100,78 +105,82 @@ const BlogForm = () => {
       setAuthor("");
       setPublishedDate("");
       setDescription("");
-      setSections([]);
+      setSections([]); // Reset sections array
       setReference("");
+      setEditorKey((prevKey) => prevKey + 1); // Change key to reset RichTextEditor
+      navigate("/blogs");
     } catch (error) {
       console.error("There was an error submitting the form!", error);
     }
   };
 
   return (
-    <div className="mx-auto shadow-2xl w-[80%] card bg-base-100 shrink-0">
-      <form onSubmit={handleSubmit} className="gap-2 mt-10 card-body">
-        <div className="form-control">
-          <label className="label">Title:</label>
-          <input
-            type="text"
-            className="w-full input input-bordered"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
+    <div className="mx-auto mb-10  mt-10 w-[100%] card bg-base-100 shrink-0">
+      <div className="mx-auto  border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
+        <form onSubmit={handleSubmit} className="gap-2 card-body">
+          <div className="form-control">
+            <label className="label">Title:</label>
+            <input
+              type="text"
+              className="w-full input input-bordered"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-        <div className="form-control">
-          <label className="label">Cover Image:</label>
-          <input
-            type="file"
-            className="w-full file-input"
-            accept="image/*"
-            onChange={(e) => setCoverImageFile(e.target.files[0])}
-          />
-        </div>
+          <div className="form-control">
+            <label className="label">Cover Image:</label>
+            <input
+              type="file"
+              className="w-full file-input"
+              accept="image/*"
+              onChange={(e) => setCoverImageFile(e.target.files[0])}
+            />
+          </div>
 
-        <div className="form-control">
-          <label className="label">Author:</label>
-          <input
-            type="text"
-            className="w-full input input-bordered"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
+          <div className="form-control">
+            <label className="label">Author:</label>
+            <input
+              type="text"
+              className="w-full input input-bordered"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+          </div>
 
-        <div className="form-control">
-          <label className="label">Published Date:</label>
-          <input
-            type="date"
-            value={publishedDate}
-            className="w-full input input-bordered"
-            onChange={(e) => setPublishedDate(e.target.value)}
-          />
-        </div>
+          <div className="form-control">
+            <label className="label">Published Date:</label>
+            <input
+              type="date"
+              value={publishedDate}
+              className="w-full input input-bordered"
+              onChange={(e) => setPublishedDate(e.target.value)}
+            />
+          </div>
 
-        <div className="">
-          <label className="label">Description:</label>
-          <div className="w-full overflow-scroll">
+          <div className="form-control">
+            <label className="label">Description:</label>
+            <p className="mb-2 ml-2 text-xs text-gray-500">
+              If the text is highlighted with color click on the Tx button to
+              remove the highlighted color
+            </p>
             <RichTextEditor
+              keyProp={editorKey}
               defaultValue={description}
               onRichTextEditorChange={(e) => setDescription(e.target.value)}
             />
           </div>
-        </div>
 
-        <div className="form-control">
-          <h4 className="label">Sections</h4>
-          {sections
-            .slice()
-            .sort((a, b) => a.timestamp - b.timestamp) // Sort by timestamp
-            .map((section, index) => (
+          <div className="form-control">
+            <h4 className="label">Sections</h4>
+            {sections.map((section, index) => (
               <div key={index} className="gap-2 mb-4">
                 <div className="form-control">
+                  <label className="label">Image:</label>
                   <input
                     type="file"
                     accept="image/*"
-                    className="w-full max-w-xs file-input"
+                    className="w-full file-input"
                     onChange={(e) => handleFileChange(index, e.target.files[0])}
                   />
                 </div>
@@ -182,11 +191,16 @@ const BlogForm = () => {
                     value={section.imageTitle}
                     className="w-full input input-bordered"
                     onChange={(e) =>
-                      handleImageChange(index, "imageTitle", e.target.value)
+                      handleImageTitleChange(index, e.target.value)
                     }
                   />
                 </div>
-                <div className="mt-4 form-control">
+                <div className="form-control">
+                  <label className="label">Content:</label>
+                  <p className="mb-2 ml-2 text-xs text-gray-500">
+                    If the text is highlighted with color click on the Tx button
+                    to remove the highlighted color
+                  </p>
                   <RichTextEditor
                     defaultValue={section.content}
                     onRichTextEditorChange={(e) =>
@@ -203,29 +217,33 @@ const BlogForm = () => {
                 </button>
               </div>
             ))}
-          <button
-            type="button"
-            className="mt-2 btn btn-primary btn-sm"
-            onClick={addSection}
-          >
-            Add Section
+            <button
+              type="button"
+              className="mt-2 btn btn-primary btn-sm"
+              onClick={addSection}
+            >
+              Add Section
+            </button>
+          </div>
+
+          <div className="form-control">
+            <label className="label">Reference:</label>
+            <p className="mb-2 ml-2 text-xs text-gray-500">
+              If the text is highlighted with color click on the Tx button to
+              remove the highlighted color
+            </p>
+            <RichTextEditor
+              keyProp={editorKey}
+              defaultValue={reference}
+              onRichTextEditorChange={(e) => setReference(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="mt-2 btn btn-secondary">
+            Submit
           </button>
-        </div>
-
-        <div>
-          <label className="label">Reference:</label>
-          <input
-            type="text"
-            value={reference}
-            className="w-full input input-bordered"
-            onChange={(e) => setReference(e.target.value)}
-          />
-        </div>
-
-        <button type="submit" className="mt-2 btn btn-secondary">
-          Submit
-        </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

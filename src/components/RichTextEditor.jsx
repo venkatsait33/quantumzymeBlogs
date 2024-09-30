@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BtnBold,
   BtnBulletList,
@@ -18,20 +18,24 @@ import {
   Toolbar,
 } from "react-simple-wysiwyg";
 
-const RichTextEditor = ({ defaultValue, onRichTextEditorChange }) => {
+const RichTextEditor = ({ defaultValue, onRichTextEditorChange, keyProp }) => {
   const [value, setValue] = useState(defaultValue);
-  console.log(value);
+
+  // Ensure the editor resets when the parent changes defaultValue
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <div className="editor-container">
-      {" "}
       <EditorProvider>
         <Editor
+          key={keyProp} // Ensure the key changes to force re-render on form reset
           className="editor"
           value={value}
           onChange={(e) => {
             onRichTextEditorChange(e);
-            setValue(e.target.value);
+            setValue(e.target.value); // Update the local state
           }}
         >
           <Toolbar>
