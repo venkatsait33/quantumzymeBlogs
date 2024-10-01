@@ -1,7 +1,8 @@
-import  { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import RichTextEditor from "../components/RichTextEditor";
 import { useNavigate } from "react-router-dom";
+import Tables from "../components/Tables";
 
 const BlogForm = () => {
   const [title, setTitle] = useState("");
@@ -9,7 +10,7 @@ const BlogForm = () => {
   const [author, setAuthor] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
   const [description, setDescription] = useState("");
-  const [sections, setSections] = useState([]); // Array to store sections with image, title, and content
+  const [sections, setSections] = useState([]);
   const [reference, setReference] = useState("");
   const [editorKey, setEditorKey] = useState(0);
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ const BlogForm = () => {
     });
   };
 
-  // Add section with image, imageTitle, and content as a new object in the sections array
   const addSection = () => {
     setSections((prevSections) => [
       ...prevSections,
@@ -32,6 +32,7 @@ const BlogForm = () => {
         image: null,
         imageTitle: "",
         content: "",
+        tables: [], // Initialize tables array for each section
         timestamp: Date.now(),
       },
     ]);
@@ -63,6 +64,16 @@ const BlogForm = () => {
     setSections(updatedSections);
   };
 
+  const handleSaveTable = (tableData, sectionIndex) => {
+    setSections((prevSections) => {
+      const updatedSections = [...prevSections];
+      updatedSections[sectionIndex] = {
+        ...updatedSections[sectionIndex],
+        tables: [...tableData.tableData],
+      };
+      return updatedSections;
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,7 +82,6 @@ const BlogForm = () => {
       coverImageBase64 = await fileToBase64(coverImageFile);
     }
 
-    // Process all sections to convert files to base64 and build the final structure
     const processedSections = await Promise.all(
       sections.map(async (section) => {
         let imageBase64 = "";
@@ -82,6 +92,7 @@ const BlogForm = () => {
           image: imageBase64,
           imageTitle: section.imageTitle,
           content: section.content,
+          tables: section.tables, // Include tables in the final structure
         };
       })
     );
@@ -92,30 +103,28 @@ const BlogForm = () => {
       author,
       publishedDate,
       description,
-      sections: processedSections, // Store the processed sections
+      sections: processedSections,
       reference,
     };
 
     try {
       await axios.post("http://localhost:3000/blogs", blogData);
       alert("Blog submitted successfully!");
-      // Clear form after submission
       setTitle("");
       setCoverImageFile(null);
       setAuthor("");
       setPublishedDate("");
       setDescription("");
-      setSections([]); // Reset sections array
+      setSections([]);
       setReference("");
-      setEditorKey((prevKey) => prevKey + 1); // Change key to reset RichTextEditor
+      setEditorKey((prevKey) => prevKey + 1);
       navigate("/blogs");
     } catch (error) {
       console.error("There was an error submitting the form!", error);
     }
   };
-
   return (
-    <div className="mx-auto mb-10  mt-10 w-[100%] card bg-base-100 shrink-0">
+    <div className="mx-auto mb-10 mt-10 lg:w-[80%] card bg-base-100 shrink-0">
       <div className="mx-auto  border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
         <form onSubmit={handleSubmit} className="gap-2 card-body">
           <div className="form-control">
@@ -185,7 +194,7 @@ const BlogForm = () => {
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label">Image Title:</label>
+                  <label className="label">Title:</label>
                   <input
                     type="text"
                     value={section.imageTitle}
@@ -208,9 +217,13 @@ const BlogForm = () => {
                     }
                   />
                 </div>
+                <Tables
+                  initialTables={section.tables}
+                  onSaveTable={(tableData) => handleSaveTable(tableData, index)}
+                />
                 <button
                   type="button"
-                  className="mt-2 btn btn-error btn-sm"
+                  className="w-full mt-2 btn btn-error btn-sm lg:btn"
                   onClick={() => removeSection(index)}
                 >
                   Remove Section
@@ -219,7 +232,7 @@ const BlogForm = () => {
             ))}
             <button
               type="button"
-              className="mt-2 btn btn-primary btn-sm"
+              className="mt-2 btn btn-primary btn-sm lg:btn"
               onClick={addSection}
             >
               Add Section

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import PageCover from "../components/PageCover";
 import RecentPost from "../components/RecentPost";
 import { BiArrowBack } from "react-icons/bi";
 
 const BlogDisplay = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState({});
   const { id } = useParams();
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -22,17 +22,46 @@ const BlogDisplay = () => {
     };
 
     if (id) {
-      fetchBlog(); // Fetch blog when component mounts or id changes
+      fetchBlog();
     }
   }, [id]);
 
+  const renderTables = (tables) => {
+    return tables.map((table, tableIndex) => (
+      <div key={tableIndex} className="m-4 overflow-x-auto">
+        <table className="table table-zebra-zebra">
+          <thead>
+            <tr>
+              {table.headings.map((heading, headingIndex) => (
+                <th key={headingIndex} className="px-4 py-2 border">
+                  {heading || `Heading ${headingIndex + 1}`}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, colIndex) => (
+                  <td key={colIndex} className="px-4 py-2 border">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ));
+  };
+
   return (
     <div>
-      {/* Back Arrow Button - Fixed position on screen */}
+      {/* Back Arrow Button */}
       <div className="fixed z-50 mt-20 top-4 left-4">
         <button
-          onClick={() => navigate(-1)} // Navigates to the previous page
-          className="btn btn-sm hover:bg-gray-200 hover:text-gray-700"
+          onClick={() => navigate(-1)}
+          className="text-xl btn btn-sm btn-outline btn-primary"
         >
           <BiArrowBack className="text-xl" />
         </button>
@@ -44,7 +73,7 @@ const BlogDisplay = () => {
       <div className="flex">
         {/* Main content area */}
         <div className="p-6 mx-auto w-[70%] sm:w-full">
-          {blogs.length === 0 ? (
+          {Object.keys(blogs).length === 0 ? (
             <p>No blogs available.</p>
           ) : (
             <div
@@ -75,7 +104,14 @@ const BlogDisplay = () => {
                   </div>
                   <div className="m-2 divider"></div>
 
-                  <p style={{ wordBreak: "break-word", marginBottom: "20px" }}>
+                  <p
+                    style={{
+                      wordBreak: "break-word",
+                      marginBottom: "20px",
+                      lineHeight: "1.6",
+                      textIndent: "25px",
+                    }}
+                  >
                     <div
                       dangerouslySetInnerHTML={{ __html: blogs.description }}
                     />
@@ -83,20 +119,30 @@ const BlogDisplay = () => {
                   {blogs.sections &&
                     blogs.sections.map((section, index) => (
                       <div key={index}>
-                        <img
-                          src={section.image}
-                          alt={`Image ${index}`}
-                          className="object-scale-down w-full"
-                        />
-                        <h2 className="text-base text-center">
-                          {section.imageTitle}
-                        </h2>
+                        {section.image && (
+                          <>
+                            {section.image && (
+                              <img
+                                src={section.image}
+                                alt={`Image ${index}`}
+                                className="object-scale-down w-full h-full rounded"
+                              />
+                            )}
+                            {section.imageTitle && (
+                              <h2 className="mt-2 text-center">
+                                {section.imageTitle}
+                              </h2>
+                            )}
+                          </>
+                        )}
                         {section.content && (
                           <div>
                             <p
                               style={{
                                 wordBreak: "break-word",
                                 marginBottom: "20px",
+                                marginTop: "15px",
+                                lineHeight: "1.6",
                               }}
                             >
                               <div
@@ -107,6 +153,9 @@ const BlogDisplay = () => {
                             </p>
                           </div>
                         )}
+                        {section.tables &&
+                          section.tables.length > 0 &&
+                          renderTables(section.tables)}
                       </div>
                     ))}
                   {blogs.reference && (
@@ -116,6 +165,7 @@ const BlogDisplay = () => {
                         style={{
                           wordBreak: "break-word",
                           marginBottom: "20px",
+                          lineHeight: "1.6",
                         }}
                       >
                         <div
