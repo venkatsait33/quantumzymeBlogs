@@ -49,7 +49,7 @@ const BlogDisplay = () => {
           ) : (
             <div
               key={blogs.id}
-              className="mb-8 overflow-hidden rounded-lg shadow-lg"
+              className="p-2 mb-8 overflow-hidden rounded-lg shadow-lg"
             >
               <div className="flex">
                 <div className="mt-12">
@@ -57,13 +57,24 @@ const BlogDisplay = () => {
                     {blogs.title}
                   </h2>
                   <div className="flex items-center mb-4 justify-evenly">
-                    <p>
-                      <strong>Author:</strong> {blogs.author}
+                    <p className="flex items-center justify-center">
+                      <span className="text-base">Author:&nbsp;</span>
+                      <span className="text-xl font-semibold">
+                        {blogs.author}
+                      </span>
                     </p>
-                    <p>
-                      <strong>Date of Publishing:</strong> {blogs.publishedDate}
+                    <p className="text-xl">|</p>
+                    <p className="flex items-center justify-center">
+                      <span className="text-base">
+                        Date of Publishing: &nbsp;
+                      </span>
+                      <span className="text-xl font-semibold">
+                        {blogs.publishedDate}
+                      </span>
                     </p>
                   </div>
+                  <div className="m-2 divider"></div>
+
                   <p style={{ wordBreak: "break-word", marginBottom: "20px" }}>
                     <div
                       dangerouslySetInnerHTML={{ __html: blogs.description }}

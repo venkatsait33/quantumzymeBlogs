@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const RecentPost = () => {
@@ -10,7 +10,6 @@ const RecentPost = () => {
       try {
         const response = await axios.get("http://localhost:3000/blogs");
         setBlogs(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -25,11 +24,18 @@ const RecentPost = () => {
       {blogs.length === 0 ? (
         <p>No Recent blogs available.</p>
       ) : (
-        blogs.map((blog) => (
-          <Link to={`/blogs/${blog.id}`} key={blog.id} className="block mb-4">
-            <h2 className="text-base hover:underline">{blog.title}</h2>
-          </Link>
-        ))
+        <div>
+          <h1 className="mb-4 text-2xl font-bold">Recent Posts</h1>
+          {blogs.map((blog) => (
+            <div key={blog.id}>
+              <Link to={`/blogs/${blog.id}`} className="block mb-4">
+                <h2 className="text-base font-semibold hover:underline">
+                  {blog.title}
+                </h2>
+              </Link>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
