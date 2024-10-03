@@ -82,25 +82,33 @@ const BlogDisplay = () => {
             >
               <div className="flex">
                 <div className="mt-12">
-                  <h2 className="mb-4 text-5xl font-bold text-center">
-                    {blogs.title}
-                  </h2>
+                  {blogs.title && (
+                    <h2 className="mb-4 text-5xl font-bold text-center">
+                      {blogs.title}
+                    </h2>
+                  )}
+
                   <div className="flex items-center mb-4 justify-evenly">
-                    <p className="flex items-center justify-center">
-                      <span className="text-base">Author:&nbsp;</span>
-                      <span className="text-xl font-semibold">
-                        {blogs.author}
-                      </span>
-                    </p>
-                    <p className="text-xl">|</p>
-                    <p className="flex items-center justify-center">
-                      <span className="text-base">
-                        Date of Publishing: &nbsp;
-                      </span>
-                      <span className="text-xl font-semibold">
-                        {blogs.publishedDate}
-                      </span>
-                    </p>
+                    {blogs.author && (
+                      <p className="flex items-center justify-center">
+                        <span className="text-base">Author:&nbsp;</span>
+                        <span className="text-xl font-semibold">
+                          {blogs.author}
+                        </span>
+                      </p>
+                    )}
+                    {blogs.publishedDate && <p className="text-xl">|</p>}
+
+                    {blogs.publishedDate && (
+                      <p className="flex items-center justify-center">
+                        <span className="text-base">
+                          Date of Publishing: &nbsp;
+                        </span>
+                        <span className="text-xl font-semibold">
+                          {blogs.publishedDate}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div className="m-2 divider"></div>
 
