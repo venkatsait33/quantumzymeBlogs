@@ -1,6 +1,6 @@
 import React from "react";
 
-const PageCover = ({ blogs }) => {
+const PageCover = ({ blog }) => {
   return (
     <div>
       <div
@@ -12,7 +12,7 @@ const PageCover = ({ blogs }) => {
         {/* Image with opacity */}
         <div
           style={{
-            backgroundImage: `url(${blogs.coverImage})`,
+            backgroundImage: `url("${blog.coverImage}")`,
             width: "100%",
             position: "absolute",
             top: 0,
@@ -49,7 +49,7 @@ const PageCover = ({ blogs }) => {
             textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
           }}
         >
-          <h1 className="text-4xl font-bold sm:text-center">{blogs.title}</h1>
+          <h1 className="text-4xl font-bold sm:text-center">{blog.title}</h1>
         </div>
       </div>
     </div>

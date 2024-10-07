@@ -1,10 +1,23 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
-import { useBlogContext } from "../context/BlogContext";
 
 const Blogs = () => {
-  const { blogs, loading } = useBlogContext();
+  const [blogs, setBlogs] = useState([]);
 
-  if (loading) return <p>Loading...</p>;
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/blogs");
+        setBlogs(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   const limitDescription = (description, limit = 250) => {
     return description.length > limit
@@ -22,13 +35,13 @@ const Blogs = () => {
         blogs.map((blog) => (
           <Link to={`/blogs/${blog.id}`} key={blog.id} className="mb-8">
             {blog && (
-              <div className="w-full h-full transition duration-75 shadow-xl card bg-base-300 hover:scale-90">
+              <div className="w-full h-full shadow-xl card bg-base-300">
                 {blog.coverImage && (
                   <figure>
                     <img
                       src={blog.coverImage}
                       alt={blog.title}
-                      className="object-scale-down w-full h-40 p-2 "
+                      className="w-full h-40 "
                     />
                   </figure>
                 )}

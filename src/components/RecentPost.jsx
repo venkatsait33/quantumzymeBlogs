@@ -1,22 +1,12 @@
 import axios from "axios";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useBlogContext } from "../context/BlogContext";
 
 const RecentPost = () => {
-  const [blogs, setBlogs] = useState([]);
+  const { blogs, loading } = useBlogContext();
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/blogs");
-        setBlogs(response.data);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+  if (loading) return <p>Loading...</p>;
 
   return (
     // Scrollable recent post titles inside the fixed/sticky container

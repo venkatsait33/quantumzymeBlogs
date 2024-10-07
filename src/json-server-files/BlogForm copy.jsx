@@ -1,41 +1,29 @@
 import { useState } from "react";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  collection,
-  serverTimestamp,
-} from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import RichTextEditor from "../components/RichTextEditor";
-import Tables from "../components/Tables"; // Import Tables component
-import { app } from "../firebaseConfig"; // Assuming firebase is initialized in firebaseConfig.js
-
-const db = getFirestore(app);
-const storage = getStorage(app);
+import { useNavigate } from "react-router-dom";
+import Tables from "../components/Tables";
 
 const BlogForm = () => {
   const [title, setTitle] = useState("");
   const [coverImageFile, setCoverImageFile] = useState(null);
-  const [coverText, setCoverText] = useState("");
   const [author, setAuthor] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
   const [description, setDescription] = useState("");
   const [sections, setSections] = useState([]);
   const [reference, setReference] = useState("");
   const [editorKey, setEditorKey] = useState(0);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Function to upload images
-  const uploadImage = async (file) => {
-    const imageRef = ref(storage, `images/${Date.now()}-${file.name}`);
-    await uploadBytes(imageRef, file);
-    return getDownloadURL(imageRef);
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
-  // Function to handle adding sections
   const addSection = () => {
     setSections((prevSections) => [
       ...prevSections,
@@ -44,23 +32,15 @@ const BlogForm = () => {
         image: null,
         imageTitle: "",
         content: "",
+        tables: [], // Initialize tables array for each section
         timestamp: Date.now(),
-        tableData: [], // Ensure table data is part of each section
       },
     ]);
   };
 
-  // Function to handle saving table data
-  const handleSaveTable = (sectionIndex, tableData) => {
-    // Update the table data within the respective section
-    const updatedSections = sections.map((section, index) =>
-      index === sectionIndex ? { ...section, tableData: tableData } : section
-    );
-    setSections(updatedSections);
-  };
-
   const removeSection = (index) => {
-    setSections(sections.filter((_, i) => i !== index));
+    const updatedSections = sections.filter((_, i) => i !== index);
+    setSections(updatedSections);
   };
 
   const handleFileChange = (index, file) => {
@@ -84,78 +64,51 @@ const BlogForm = () => {
     setSections(updatedSections);
   };
 
-  const transformTableData = (tables) => {
-    console.log("Received tables:", tables);
-
-    if (!Array.isArray(tables)) {
-      console.warn("Warning: tables is not an array, returning empty array");
-      return []; // Return an empty array if tables is not an array
-    }
-
-    return tables.map((table, idx) => {
-      console.log(`Processing table ${idx}:`, table);
-
-      return {
-        headings: table.headings || [],
-        // Flatten rows to avoid nested arrays
-        rows: Array.isArray(table.rows)
-          ? table.rows.map((row) => (Array.isArray(row) ? row.join(", ") : row)) // Flatten arrays in rows to strings
-          : [],
+  const handleSaveTable = (tableData, sectionIndex) => {
+    setSections((prevSections) => {
+      const updatedSections = [...prevSections];
+      updatedSections[sectionIndex] = {
+        ...updatedSections[sectionIndex],
+        tables: [...tableData.tableData],
       };
+      return updatedSections;
     });
   };
-
-  // Handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
+    let coverImageBase64 = "";
+    if (coverImageFile) {
+      coverImageBase64 = await fileToBase64(coverImageFile);
+    }
+
+    const processedSections = await Promise.all(
+      sections.map(async (section) => {
+        let imageBase64 = "";
+        if (section.image) {
+          imageBase64 = await fileToBase64(section.image);
+        }
+        return {
+          image: imageBase64,
+          imageTitle: section.imageTitle,
+          content: section.content,
+          tables: section.tables, // Include tables in the final structure
+        };
+      })
+    );
+
+    const blogData = {
+      title,
+      coverImage: coverImageBase64,
+      author,
+      publishedDate,
+      description,
+      sections: processedSections,
+      reference,
+    };
 
     try {
-      const coverImageUrl = coverImageFile
-        ? await uploadImage(coverImageFile)
-        : "";
-
-      // Process the sections including the image upload and table data transformation
-      const processedSections = await Promise.all(
-        sections.map(async (section) => {
-          const imageUrl = section.image
-            ? await uploadImage(section.image)
-            : "";
-
-          console.log(
-            "Section tableData before transformation:",
-            section.tableData
-          ); // Debugging
-          const tableData = transformTableData(
-            section.tableData?.tableData || []
-          );
-          console.log(tableData);
-
-          return {
-            image: imageUrl,
-            imageTitle: section.imageTitle,
-            content: section.content,
-            tableData: tableData, // Use the table data from the section itself
-          };
-        })
-      );
-
-      const blogData = {
-        title,
-        coverText,
-        coverImage: coverImageUrl,
-        author,
-        publishedDate,
-        description,
-        sections: processedSections, // Include processed sections
-        createdAt: serverTimestamp(),
-      };
-
-      // Save the blog data to Firestore
-      const blogRef = doc(collection(db, "blogs"));
-      await setDoc(blogRef, blogData);
-      console.log("Blog saved:", blogData);
-
+      await axios.post("http://localhost:3000/blogs", blogData);
       alert("Blog submitted successfully!");
       setTitle("");
       setCoverImageFile(null);
@@ -168,16 +121,12 @@ const BlogForm = () => {
       navigate("/blogs");
     } catch (error) {
       console.error("There was an error submitting the form!", error);
-    } finally {
-      setLoading(false);
     }
   };
-
   return (
     <div className="mx-auto mb-10 mt-10 lg:w-[80%] card bg-base-100 shrink-0">
-      <div className="mx-auto border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
+      <div className="mx-auto  border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
         <form onSubmit={handleSubmit} className="gap-2 card-body">
-          {/* Form Fields for Title, Cover Image, Author, Date, Description */}
           <div className="form-control">
             <label className="label">Title:</label>
             <input
@@ -217,21 +166,13 @@ const BlogForm = () => {
               onChange={(e) => setPublishedDate(e.target.value)}
             />
           </div>
-          <div className="form-control">
-            <label className="label">Cover page Summery:</label>
-            <span className="m-2 text-xs text-center">
-              This is displayed on the cover page of blog and write about your
-              theses in 250 words
-            </span>
-            <RichTextEditor
-              keyProp={editorKey}
-              defaultValue={coverText}
-              onRichTextEditorChange={(e) => setCoverText(e.target.value)}
-            />
-          </div>
 
           <div className="form-control">
             <label className="label">Description:</label>
+            <p className="mb-2 ml-2 text-xs text-gray-500">
+              If the text is highlighted with color click on the Tx button to
+              remove the highlighted color
+            </p>
             <RichTextEditor
               keyProp={editorKey}
               defaultValue={description}
@@ -239,12 +180,11 @@ const BlogForm = () => {
             />
           </div>
 
-          {/* Add Section Component */}
-          <div className=" form-control">
+          <div className="form-control">
             <h4 className="label">Sections</h4>
             {sections.map((section, index) => (
-              <div key={index} className="gap-2 p-2 mb-4 border rounded">
-                <div className="form-control ">
+              <div key={index} className="gap-2 mb-4">
+                <div className="form-control">
                   <label className="label">Image:</label>
                   <input
                     type="file"
@@ -254,7 +194,7 @@ const BlogForm = () => {
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label">Image Title:</label>
+                  <label className="label">Title:</label>
                   <input
                     type="text"
                     value={section.imageTitle}
@@ -266,6 +206,10 @@ const BlogForm = () => {
                 </div>
                 <div className="form-control">
                   <label className="label">Content:</label>
+                  <p className="mb-2 ml-2 text-xs text-gray-500">
+                    If the text is highlighted with color click on the Tx button
+                    to remove the highlighted color
+                  </p>
                   <RichTextEditor
                     defaultValue={section.content}
                     onRichTextEditorChange={(e) =>
@@ -273,8 +217,10 @@ const BlogForm = () => {
                     }
                   />
                 </div>
-                <Tables sectionIndex={index} onSaveTable={handleSaveTable} />
-
+                <Tables
+                  initialTables={section.tables}
+                  onSaveTable={(tableData) => handleSaveTable(tableData, index)}
+                />
                 <button
                   type="button"
                   className="w-full mt-2 btn btn-error btn-sm lg:btn"
@@ -295,6 +241,10 @@ const BlogForm = () => {
 
           <div className="form-control">
             <label className="label">Reference:</label>
+            <p className="mb-2 ml-2 text-xs text-gray-500">
+              If the text is highlighted with color click on the Tx button to
+              remove the highlighted color
+            </p>
             <RichTextEditor
               keyProp={editorKey}
               defaultValue={reference}
@@ -302,20 +252,8 @@ const BlogForm = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="mt-2 btn btn-secondary"
-            disabled={loading}
-          >
-            {loading ? (
-              <div className="flex items-center">
-                <span className="loading loading-infinity loading-md"></span>{" "}
-                {/* Spinner */}
-                Submitting...
-              </div>
-            ) : (
-              "Submit"
-            )}
+          <button type="submit" className="mt-2 btn btn-secondary">
+            Submit
           </button>
         </form>
       </div>

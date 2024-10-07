@@ -1,27 +1,35 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import PageCover from "../components/PageCover";
 import RecentPost from "../components/RecentPost";
 import { BiArrowBack } from "react-icons/bi";
-import { useBlogContext } from "../context/BlogContext";
 
 const BlogDisplay = () => {
-  const { blogs, loading } = useBlogContext();
+  const [blogs, setBlogs] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
 
-  if (loading) return <p>Loading...</p>;
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/blogs/${id}`);
+        setBlogs(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching the blog", error);
+      }
+    };
 
-  const blog = blogs.find((blog) => blog.id === id);
-  console.log(blog);
-
-  if (!blog) return <p>Blog not found</p>;
+    if (id) {
+      fetchBlog();
+    }
+  }, [id]);
 
   const renderTables = (tables) => {
-    console.log(tables);
-
     return tables.map((table, tableIndex) => (
       <div key={tableIndex} className="m-4 overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table table-zebra-zebra">
           <thead>
             <tr>
               {table.headings.map((heading, headingIndex) => (
@@ -34,17 +42,11 @@ const BlogDisplay = () => {
           <tbody>
             {table.rows.map((row, rowIndex) => (
               <tr key={rowIndex}>
-                {typeof row === "string"
-                  ? row.split(",").map((cell, colIndex) => (
-                      <td key={colIndex} className="px-4 py-2 border">
-                        {cell.trim()}
-                      </td>
-                    ))
-                  : row.map((cell, colIndex) => (
-                      <td key={colIndex} className="px-4 py-2 border">
-                        {cell}
-                      </td>
-                    ))}
+                {row.map((cell, colIndex) => (
+                  <td key={colIndex} className="px-4 py-2 border">
+                    {cell}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
@@ -66,44 +68,44 @@ const BlogDisplay = () => {
       </div>
 
       <div className="p-2 mt-14">
-        <PageCover blog={blog} />
+        <PageCover blogs={blogs} />
       </div>
       <div className="flex">
         {/* Main content area */}
         <div className="p-6 mx-auto w-[70%] sm:w-full">
-          {Object.keys(blog).length === 0 ? (
+          {Object.keys(blogs).length === 0 ? (
             <p>No blogs available.</p>
           ) : (
             <div
-              key={blog.id}
+              key={blogs.id}
               className="p-2 mb-8 overflow-hidden rounded-lg shadow-lg"
             >
               <div className="flex">
                 <div className="mt-12">
-                  {blog.title && (
+                  {blogs.title && (
                     <h2 className="mb-4 text-5xl font-bold text-center">
-                      {blog.title}
+                      {blogs.title}
                     </h2>
                   )}
 
                   <div className="flex items-center mb-4 justify-evenly">
-                    {blog.author && (
+                    {blogs.author && (
                       <p className="flex items-center justify-center">
                         <span className="text-base">Author:&nbsp;</span>
                         <span className="text-xl font-semibold">
-                          {blog.author}
+                          {blogs.author}
                         </span>
                       </p>
                     )}
-                    {blog.publishedDate && <p className="text-xl">|</p>}
+                    {blogs.publishedDate && <p className="text-xl">|</p>}
 
-                    {blog.publishedDate && (
+                    {blogs.publishedDate && (
                       <p className="flex items-center justify-center">
                         <span className="text-base">
                           Date of Publishing: &nbsp;
                         </span>
                         <span className="text-xl font-semibold">
-                          {blog.publishedDate}
+                          {blogs.publishedDate}
                         </span>
                       </p>
                     )}
@@ -119,11 +121,11 @@ const BlogDisplay = () => {
                     }}
                   >
                     <div
-                      dangerouslySetInnerHTML={{ __html: blog.description }}
+                      dangerouslySetInnerHTML={{ __html: blogs.description }}
                     />
                   </p>
-                  {blog.sections &&
-                    blog.sections.map((section, index) => (
+                  {blogs.sections &&
+                    blogs.sections.map((section, index) => (
                       <div key={index}>
                         {section.image && (
                           <>
@@ -159,12 +161,12 @@ const BlogDisplay = () => {
                             </p>
                           </div>
                         )}
-                        {section.tableData &&
-                          section.tableData.length > 0 &&
-                          renderTables(section.tableData)}
+                        {section.tables &&
+                          section.tables.length > 0 &&
+                          renderTables(section.tables)}
                       </div>
                     ))}
-                  {blog.reference && (
+                  {blogs.reference && (
                     <div>
                       <h1 className="mb-4 text-2xl font-bold">Reference</h1>
                       <p
@@ -175,7 +177,7 @@ const BlogDisplay = () => {
                         }}
                       >
                         <div
-                          dangerouslySetInnerHTML={{ __html: blog.reference }}
+                          dangerouslySetInnerHTML={{ __html: blogs.reference }}
                         />
                       </p>
                     </div>
