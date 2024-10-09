@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Blogs from "../pages/Blogs";
 import BlogDisplay from "../pages/BlogDisplay";
 import BlogForm from "../pages/BlogForm";
+import BlogPages from "../pages/BlogPages";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/addBlog",
         element: <BlogForm />,
+      },
+      {
+        path: "blogPages",
+        element: <BlogPages />,
       },
       {
         path: "/blogs",

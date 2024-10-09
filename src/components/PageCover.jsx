@@ -2,7 +2,7 @@ import React from "react";
 
 const PageCover = ({ blog }) => {
   return (
-    <div>
+    <div className="w-full">
       <div
         style={{
           position: "relative",
@@ -13,6 +13,8 @@ const PageCover = ({ blog }) => {
         <div
           style={{
             backgroundImage: `url("${blog.coverImage}")`,
+            backgroundSize: "cover", // Ensures image covers the container
+            backgroundPosition: "center", // Centers the image
             width: "100%",
             position: "absolute",
             top: 0,
@@ -20,7 +22,7 @@ const PageCover = ({ blog }) => {
             zIndex: 1,
             opacity: 0.7, // Control image opacity here
           }}
-          className="object-scale-down w-full h-full bg-no-repeat bg-cover"
+          className="w-full h-full bg-no-repeat"
         />
 
         {/* Overlay to enhance text visibility */}
@@ -47,9 +49,13 @@ const PageCover = ({ blog }) => {
             height: "100%",
             color: "white",
             textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+            padding: "0 1rem", // Adds some padding for small screens
           }}
+          className="text-center"
         >
-          <h1 className="text-4xl font-bold sm:text-center">{blog.title}</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+            {blog.title}
+          </h1>
         </div>
       </div>
     </div>

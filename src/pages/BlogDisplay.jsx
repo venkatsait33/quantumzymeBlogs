@@ -16,42 +16,51 @@ const BlogDisplay = () => {
 
   if (!blog) return <p>Blog not found</p>;
 
-  const renderTables = (tables) => {
-    console.log(tables);
-
-    return tables.map((table, tableIndex) => (
-      <div key={tableIndex} className="m-4 overflow-x-auto">
-        <table className="table table-zebra">
-          <thead>
-            <tr>
-              {table.headings.map((heading, headingIndex) => (
-                <th key={headingIndex} className="px-4 py-2 border">
-                  {heading || `Heading ${headingIndex + 1}`}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {table.rows.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {typeof row === "string"
-                  ? row.split(",").map((cell, colIndex) => (
-                      <td key={colIndex} className="px-4 py-2 border">
-                        {cell.trim()}
-                      </td>
-                    ))
-                  : row.map((cell, colIndex) => (
-                      <td key={colIndex} className="px-4 py-2 border">
-                        {cell}
-                      </td>
-                    ))}
-              </tr>
+const renderTables = (tables) => {
+  return tables.map((table, tableIndex) => (
+    <div key={tableIndex} className="m-4 overflow-x-auto">
+      <table className="table table-zebra">
+        <thead>
+          <tr>
+            {table.headings.map((heading, headingIndex) => (
+              <th key={headingIndex} className="px-4 py-2 border">
+                {heading || `Heading ${headingIndex + 1}`}
+              </th>
             ))}
-          </tbody>
-        </table>
-      </div>
-    ));
-  };
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row, rowIndex) => {
+            // Process each row
+            const rowArray =
+              typeof row === "string"
+                ? row.match(/(?:"[^"]*"|[^,]+)(?=\s*,|\s*$)/g).map(
+                    (cell) =>
+                      cell.replace(/^"|"$/g, "").replace(/,/g, " ").trim() // Remove quotes and replace inner commas with spaces
+                  )
+                : row;
+
+            // If row has fewer cells than headings, add empty cells
+            while (rowArray.length < table.headings.length) {
+              rowArray.push(""); // Add empty cells if row is short
+            }
+
+            return (
+              <tr key={rowIndex}>
+                {rowArray.map((cell, colIndex) => (
+                  <td key={colIndex} className="px-4 py-2 border">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  ));
+};
+
 
   return (
     <div>

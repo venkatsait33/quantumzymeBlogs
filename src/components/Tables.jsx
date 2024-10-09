@@ -9,10 +9,13 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
     }
   }, [tables]);
 
+  // Function to handle adding a new table
   const handleAddTable = () => {
     const newTable = { headings: [], rows: [[]] };
     setTables((prev) => [...prev, newTable]);
   };
+
+  // Helper function to parse rows from strings to arrays
   const parseRowData = (row) => {
     if (Array.isArray(row)) {
       return row;
@@ -20,7 +23,18 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
     return row.split(",").map((cell) => cell.trim());
   };
 
+  // Handle adding a heading
+  const handleAddHeading = (tableIndex) => {
+    setTables((prev) => {
+      const newTables = [...prev];
+      newTables[tableIndex].headings.push(""); // Empty heading input initially
+      // Update rows to add corresponding columns for the new heading
+      newTables[tableIndex].rows.forEach((row) => row.push(""));
+      return newTables;
+    });
+  };
 
+  // Handle updating a heading value
   const handleHeadingChange = (tableIndex, headingIndex, e) => {
     const { value } = e.target;
     setTables((prev) => {
@@ -30,15 +44,18 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
     });
   };
 
-  const handleAddHeading = (tableIndex) => {
+  // Handle adding a new row
+  const handleAddRow = (tableIndex) => {
     setTables((prev) => {
       const newTables = [...prev];
-      newTables[tableIndex].headings.push("");
-      newTables[tableIndex].rows.forEach((row) => row.push(""));
+      newTables[tableIndex].rows.push(
+        new Array(newTables[tableIndex].headings.length).fill("") // Empty cells for the new row
+      );
       return newTables;
     });
   };
 
+  // Handle updating the cell data
   const handleDataChange = (tableIndex, rowIndex, colIndex, e) => {
     const { value } = e.target;
     setTables((prev) => {
@@ -47,17 +64,6 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
       return newTables;
     });
   };
-
-  const handleAddRow = (tableIndex) => {
-    setTables((prev) => {
-      const newTables = [...prev];
-      newTables[tableIndex].rows.push(
-        new Array(newTables[tableIndex].headings.length).fill("")
-      );
-      return newTables;
-    });
-  };
-
   const handleRemoveRow = (tableIndex, rowIndex) => {
     setTables((prev) => {
       const newTables = [...prev];
@@ -115,13 +121,15 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
                       {heading || `Heading ${headingIndex + 1}`}
                     </th>
                   ))}
-                  <th className="px-4 py-2 text-white bg-green-500 border">Actions</th>
+                  <th className="px-4 py-2 text-white bg-green-500 border">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {table.rows.map((row, rowIndex) => (
                   <tr key={rowIndex}>
-                    {row.map((cell, colIndex) => (
+                    {parseRowData(row).map((cell, colIndex) => (
                       <td key={colIndex} className="px-4 py-2 border">
                         <input
                           type="text"
@@ -147,6 +155,7 @@ const Tables = ({ onSaveTable, sectionIndex, initialTables = [] }) => {
                 ))}
               </tbody>
             </table>
+
             <button
               type="button"
               onClick={() => handleAddRow(tableIndex)}

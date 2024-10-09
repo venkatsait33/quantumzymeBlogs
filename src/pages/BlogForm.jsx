@@ -99,7 +99,7 @@ const BlogForm = () => {
         headings: table.headings || [],
         // Flatten rows to avoid nested arrays
         rows: Array.isArray(table.rows)
-          ? table.rows.map((row) => (Array.isArray(row) ? row.join(", ") : row)) // Flatten arrays in rows to strings
+          ? table.rows.map((row) => (Array.isArray(row) ? row.join(",") : row)) // Flatten arrays in rows to strings
           : [],
       };
     });
@@ -149,6 +149,8 @@ const BlogForm = () => {
         description,
         sections: processedSections, // Include processed sections
         createdAt: serverTimestamp(),
+        reference,
+          clicks: 0, // Initialize clicks to 0 when creating a new blog
       };
 
       // Save the blog data to Firestore

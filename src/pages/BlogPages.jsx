@@ -1,8 +1,13 @@
 import React from 'react'
+import PopularBlogs from './PopularBlogs'
+import Blogs from './Blogs'
 
 const BlogPages = () => {
   return (
-    <div>BlogPages</div>
+    <div>
+      <PopularBlogs />
+      <Blogs/>
+    </div>
   )
 }
 
