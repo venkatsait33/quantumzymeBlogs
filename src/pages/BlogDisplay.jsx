@@ -16,51 +16,57 @@ const BlogDisplay = () => {
 
   if (!blog) return <p>Blog not found</p>;
 
-const renderTables = (tables) => {
-  return tables.map((table, tableIndex) => (
-    <div key={tableIndex} className="m-4 overflow-x-auto">
-      <table className="table table-zebra">
-        <thead>
-          <tr>
-            {table.headings.map((heading, headingIndex) => (
-              <th key={headingIndex} className="px-4 py-2 border">
-                {heading || `Heading ${headingIndex + 1}`}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {table.rows.map((row, rowIndex) => {
-            // Process each row
-            const rowArray =
-              typeof row === "string"
-                ? row.match(/(?:"[^"]*"|[^,]+)(?=\s*,|\s*$)/g).map(
-                    (cell) =>
-                      cell.replace(/^"|"$/g, "").replace(/,/g, " ").trim() // Remove quotes and replace inner commas with spaces
-                  )
-                : row;
+  const renderTables = (tables, tableTitles) => {
+    return tables.map((table, tableIndex) => (
+      <div key={tableIndex} className="m-4 overflow-x-auto">
+        <table className="table table-zebra">
+          <thead>
+            <tr>
+              {table.headings.map((heading, headingIndex) => (
+                <th key={headingIndex} className="px-4 py-2 border">
+                  {heading || `Heading ${headingIndex + 1}`}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row, rowIndex) => {
+              // Process each row
+              const rowArray =
+                typeof row === "string"
+                  ? row.match(/(?:"[^"]*"|[^,]+)(?=\s*,|\s*$)/g).map(
+                      (cell) =>
+                        cell.replace(/^"|"$/g, "").replace(/,/g, " ").trim() // Remove quotes and replace inner commas with spaces
+                    )
+                  : row;
 
-            // If row has fewer cells than headings, add empty cells
-            while (rowArray.length < table.headings.length) {
-              rowArray.push(""); // Add empty cells if row is short
-            }
+              // If row has fewer cells than headings, add empty cells
+              while (rowArray.length < table.headings.length) {
+                rowArray.push(""); // Add empty cells if row is short
+              }
 
-            return (
-              <tr key={rowIndex}>
-                {rowArray.map((cell, colIndex) => (
-                  <td key={colIndex} className="px-4 py-2 border">
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  ));
-};
-
+              return (
+                <tr key={rowIndex}>
+                  {rowArray.map((cell, colIndex) => (
+                    <td key={colIndex} className="px-4 py-2 border">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {tableTitles && tableTitles.length > 0 && <div>
+          <h3 className="mt-2 mb-2 text-lg font-bold text-center">
+            {(tableTitles && tableTitles[tableIndex]) ||
+              `Table ${tableIndex + 1}`}
+          </h3>
+        </div>}
+        
+      </div>
+    ));
+  };
 
   return (
     <div>
@@ -170,7 +176,7 @@ const renderTables = (tables) => {
                         )}
                         {section.tableData &&
                           section.tableData.length > 0 &&
-                          renderTables(section.tableData)}
+                          renderTables(section.tableData, section.tableTitle)}
                       </div>
                     ))}
                   {blog.reference && (

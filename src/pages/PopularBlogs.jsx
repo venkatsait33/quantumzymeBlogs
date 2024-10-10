@@ -74,10 +74,10 @@ const PopularBlogs = () => {
             <Link
               to={`/blogs/${blog.id}`}
               key={blog.id}
-              className="mb-8"
+              className="mb-8 "
               onClick={() => handleBlogClick(blog.id)}
             >
-              <div className="w-full h-full transition duration-75 shadow-xl card bg-base-300 hover:scale-90">
+              <div className="w-full h-full transition duration-300 delay-150 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 ">
                 {blog.coverImage && (
                   <figure>
                     <img

@@ -51,10 +51,12 @@ const BlogForm = () => {
   };
 
   // Function to handle saving table data
-  const handleSaveTable = (sectionIndex, tableData) => {
-    // Update the table data within the respective section
+  const handleSaveTable = (sectionIndex, tableData, tableTitle) => {
+    // Update the table data and table title within the respective section
     const updatedSections = sections.map((section, index) =>
-      index === sectionIndex ? { ...section, tableData: tableData } : section
+      index === sectionIndex
+        ? { ...section, tableData: tableData, tableTitle: tableTitle }
+        : section
     );
     setSections(updatedSections);
   };
@@ -121,11 +123,14 @@ const BlogForm = () => {
           const imageUrl = section.image
             ? await uploadImage(section.image)
             : "";
-
-          console.log(
-            "Section tableData before transformation:",
-            section.tableData
-          ); // Debugging
+          {
+            /*
+            console.log(
+              "Section tableData before transformation:",
+              section.tableData
+            ); // Debugging
+          */
+          }
           const tableData = transformTableData(
             section.tableData?.tableData || []
           );
@@ -136,6 +141,7 @@ const BlogForm = () => {
             imageTitle: section.imageTitle,
             content: section.content,
             tableData: tableData, // Use the table data from the section itself
+            tableTitle: section.tableTitle || "",
           };
         })
       );
@@ -150,7 +156,7 @@ const BlogForm = () => {
         sections: processedSections, // Include processed sections
         createdAt: serverTimestamp(),
         reference,
-          clicks: 0, // Initialize clicks to 0 when creating a new blog
+        clicks: 0, // Initialize clicks to 0 when creating a new blog
       };
 
       // Save the blog data to Firestore
@@ -167,7 +173,7 @@ const BlogForm = () => {
       setSections([]);
       setReference("");
       setEditorKey((prevKey) => prevKey + 1);
-      navigate("/blogs");
+      navigate("/blogPages");
     } catch (error) {
       console.error("There was an error submitting the form!", error);
     } finally {
@@ -288,7 +294,7 @@ const BlogForm = () => {
             ))}
             <button
               type="button"
-              className="mt-2 btn btn-primary btn-sm lg:btn"
+              className="mt-2 text-base btn btn-primary btn-sm lg:btn"
               onClick={addSection}
             >
               Add Section
@@ -306,7 +312,7 @@ const BlogForm = () => {
 
           <button
             type="submit"
-            className="mt-2 btn btn-secondary"
+            className="mt-2 text-base lg:btn btn-sm btn btn-secondary"
             disabled={loading}
           >
             {loading ? (

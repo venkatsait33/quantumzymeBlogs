@@ -45,7 +45,7 @@ const Blogs = () => {
               onClick={() => handleBlogClick(blog.id)}
             >
               {blog && (
-                <div className="w-full h-full transition duration-75 shadow-xl card bg-base-300 hover:scale-90">
+                <div className="w-full h-full transition duration-300 delay-150 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 ">
                   {blog.coverImage && (
                     <figure>
                       <img
@@ -69,11 +69,13 @@ const Blogs = () => {
                     <p className="overflow-hidden text-ellipsis">
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: limitDescription(blog.description),
+                          __html: limitDescription(
+                            blog.coverText || blog.description
+                          ),
                         }}
                       />
                     </p>
-                    {blog.description && (
+                    {blog.description && blog.coverText && (
                       <p className="mt-2 font-semibold text-primary">
                         Read More
                       </p>

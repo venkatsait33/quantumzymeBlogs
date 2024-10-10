@@ -14,7 +14,8 @@ const PageCover = ({ blog }) => {
           style={{
             backgroundImage: `url("${blog.coverImage}")`,
             backgroundSize: "cover", // Ensures image covers the container
-            backgroundPosition: "center", // Centers the image
+            backgroundPosition: "center",
+            objectFit: "scale-down", // Centers the image
             width: "100%",
             position: "absolute",
             top: 0,
@@ -22,7 +23,7 @@ const PageCover = ({ blog }) => {
             zIndex: 1,
             opacity: 0.7, // Control image opacity here
           }}
-          className="w-full h-full bg-no-repeat"
+          className="w-full h-full bg-no-repeat "
         />
 
         {/* Overlay to enhance text visibility */}

@@ -32,6 +32,7 @@ const RichTextEditor = ({ defaultValue, onRichTextEditorChange, keyProp }) => {
         <Editor
           key={keyProp} // Ensure the key changes to force re-render on form reset
           className="editor"
+          containerProps={{ style: { width: "full" } }}
           value={value}
           onChange={(e) => {
             onRichTextEditorChange(e);
@@ -39,9 +40,6 @@ const RichTextEditor = ({ defaultValue, onRichTextEditorChange, keyProp }) => {
           }}
         >
           <Toolbar>
-            <BtnUndo />
-            <BtnRedo />
-            <Separator />
             <BtnBold />
             <BtnItalic />
             <BtnUnderline />
