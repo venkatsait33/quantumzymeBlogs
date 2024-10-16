@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { db } from "../firebaseConfig"; // Assuming your Firestore config is exported here
+import BlogCard from "../components/BlogCard";
 
 const PopularBlogs = () => {
   const [popularBlogs, setPopularBlogs] = useState([]);
@@ -64,56 +65,20 @@ const PopularBlogs = () => {
     }
   };
   return (
-    <div className="p-6 mx-auto mt-16">
-      <h2 className="text-xl font-bold text-center">Popular Blogs</h2>
+    <div className="p-6 mx-auto mt-20">
+      <h2 className="text-xl font-bold text-center underline">Popular Blogs</h2>
       <div className="grid max-w-4xl grid-cols-1 gap-6 p-6 mx-auto sm:grid-cols-2 lg:grid-cols-2">
         {popularBlogs.length === 0 ? (
           <p>No popular blogs available.</p>
         ) : (
           popularBlogs.map((blog) => (
-            <Link
-              to={`/blogs/${blog.id}`}
+            <BlogCard
+              blog={blog}
+              limitDescription={limitDescription}
               key={blog.id}
-              className="mb-8 "
-              onClick={() => handleBlogClick(blog.id)}
-            >
-              <div className="w-full h-full transition duration-180 delay-120 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2 ">
-                {blog.coverImage && (
-                  <figure>
-                    <img
-                      src={blog.coverImage}
-                      alt={blog.title}
-                      className="object-cover w-full p-2 h-44 image-full "
-                    />
-                  </figure>
-                )}
-
-                <div className="flex flex-col justify-between card-body">
-                  <h2 className="text-lg font-bold card-title">{blog.title}</h2>
-                  <div className="flex items-center justify-between mb-2 text-sm">
-                    <p>{blog.author}</p>
-                    {blog.author && <p>|</p>}
-                    <p>{blog.publishedDate}</p>
-                  </div>
-                  <p className="overflow-hidden text-ellipsis">
-                    <div className="text-base"
-                      dangerouslySetInnerHTML={{
-                        __html: limitDescription(
-                          blog.coverText || blog.description
-                        ),
-                      }}
-                    />
-                  </p>
-
-                  <p className="mt-2 font-semibold text-primary">Read More</p>
-                  <div className="justify-end ">
-                    <p className="text-sm btn btn-sm btn-secondary">
-                      {blog.clicks} {blog.clicks === 1 ? "Click" : "Clicks"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Link>
+              handleBlogClick={handleBlogClick}
+              clicks={blog.clicks}
+            />
           ))
         )}
       </div>

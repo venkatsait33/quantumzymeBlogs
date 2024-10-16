@@ -7,7 +7,7 @@ const PageCover = ({ blog }) => {
         style={{
           position: "relative",
         }}
-        className="w-full sm:h-64 md:h-96 lg:h-128 xl:h-160"
+        className="w-full h-52 md:h-96 lg:h-128 xl:h-160"
       >
         {/* Image with opacity */}
         <div
@@ -23,7 +23,7 @@ const PageCover = ({ blog }) => {
             zIndex: 1,
             opacity: 0.7, // Control image opacity here
           }}
-          className="w-full h-full bg-no-repeat "
+          className="w-full h-full bg-no-repeat rounded shadow "
         />
 
         {/* Overlay to enhance text visibility */}
@@ -54,7 +54,7 @@ const PageCover = ({ blog }) => {
           }}
           className="text-center"
         >
-          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+          <h1 className="text-2xl font-bold max-sm:text-xl md:text-4xl lg:text-5xl">
             {blog.title}
           </h1>
         </div>

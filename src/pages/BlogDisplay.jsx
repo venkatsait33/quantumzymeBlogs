@@ -12,7 +12,6 @@ const BlogDisplay = () => {
   if (loading) return <p>Loading...</p>;
 
   const blog = blogs.find((blog) => blog.id === id);
-  console.log(blog);
 
   if (!blog) return <p>Blog not found</p>;
 
@@ -81,7 +80,7 @@ const BlogDisplay = () => {
       </div>
       <div className="flex">
         {/* Main content area */}
-        <div className="p-6 mx-auto w-[70%] sm:w-full">
+        <div className="p-6 mx-auto md:w-[70%] ">
           {Object.keys(blog).length === 0 ? (
             <p>No blogs available.</p>
           ) : (
@@ -92,12 +91,12 @@ const BlogDisplay = () => {
               <div className="flex">
                 <div className="mt-12">
                   {blog.title && (
-                    <h2 className="mb-4 text-5xl font-bold text-center">
+                    <h2 className="mb-4 text-base font-bold text-center md:text-5xl">
                       {blog.title}
                     </h2>
                   )}
 
-                  <div className="flex items-center mb-4 justify-evenly">
+                  <div className="items-center mb-4 md:flex justify-evenly">
                     {blog.author && (
                       <p className="flex items-center justify-center">
                         <span className="text-base">Author:&nbsp;</span>
@@ -106,7 +105,11 @@ const BlogDisplay = () => {
                         </span>
                       </p>
                     )}
-                    {blog.publishedDate && <p className="text-xl">|</p>}
+                    {blog.publishedDate && (
+                      <p className="text-xl max-sm:hidden max-md:hidden lg:block">
+                        |
+                      </p>
+                    )}
 
                     {blog.publishedDate && (
                       <p className="flex items-center justify-center">
@@ -128,6 +131,7 @@ const BlogDisplay = () => {
                       lineHeight: "1.6",
                       textIndent: "25px",
                     }}
+                    className="max-sm:text-sm"
                   >
                     <div
                       dangerouslySetInnerHTML={{ __html: blog.description }}
@@ -142,7 +146,7 @@ const BlogDisplay = () => {
                               <img
                                 src={section.image}
                                 alt={`Image ${index}`}
-                                className="object-scale-down w-full h-full rounded mix-blend-screen"
+                                className="object-scale-down w-full h-full rounded"
                               />
                             )}
                             {section.imageTitle && (
@@ -153,16 +157,16 @@ const BlogDisplay = () => {
                           </>
                         )}
                         {section.content && (
-                          <div>
+                          <div className=" max-sm:text-sm">
                             <p
                               style={{
                                 wordBreak: "break-word",
                                 marginBottom: "20px",
-                                marginTop: "15px",
                                 lineHeight: "1.6",
                               }}
                             >
                               <div
+                                className="p-2"
                                 dangerouslySetInnerHTML={{
                                   __html: section.content,
                                 }}
@@ -176,7 +180,7 @@ const BlogDisplay = () => {
                       </div>
                     ))}
                   {blog.reference && (
-                    <div>
+                    <div className=" max-sm:text-sm">
                       <h1 className="mb-4 text-2xl font-bold">Reference</h1>
                       <p
                         style={{
@@ -186,6 +190,7 @@ const BlogDisplay = () => {
                         }}
                       >
                         <div
+                          className="p-2 m-2"
                           dangerouslySetInnerHTML={{ __html: blog.reference }}
                         />
                       </p>
@@ -197,7 +202,7 @@ const BlogDisplay = () => {
           )}
         </div>
         {/* Sidebar area - Hidden on small screens */}
-        <div className="sm:hidden md:block lg:block  w-[calc(100%-78%)] mt-10">
+        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-78%)] mt-10">
           <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <RecentPost />
           </div>

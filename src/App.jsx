@@ -7,7 +7,7 @@ const App = () => {
   return (
     <div className="min-h-screen ">
       <NavBar/>
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full max-sm:mt-16">
         <Outlet />
       </div>
       <Footer/>
