@@ -10,6 +10,7 @@ const Home = () => {
         <Link to="/blogPages" className="m-2 btn btn-secondary">
           View Blogs
         </Link>
+        
       </div>
     </div>
   );

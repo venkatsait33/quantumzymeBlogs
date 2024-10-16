@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useBlogContext } from "../context/BlogContext";
 import { doc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import BlogCard from "../components/BlogCard";
 
 const Blogs = () => {
   const { blogs, loading } = useBlogContext();
@@ -38,52 +39,12 @@ const Blogs = () => {
           </div>
         ) : (
           blogs.map((blog) => (
-            <Link
-              to={`/blogs/${blog.id}`}
+            <BlogCard
+              blog={blog}
+              limitDescription={limitDescription}
               key={blog.id}
-              className="mb-8"
-              onClick={() => handleBlogClick(blog.id)}
-            >
-              {blog && (
-                <div className="w-full h-full transition duration-300 delay-150 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 ">
-                  {blog.coverImage && (
-                    <figure>
-                      <img
-                        src={blog.coverImage}
-                        alt={blog.title}
-                        className="object-cover w-full p-2 h-44 image-full"
-                      />
-                    </figure>
-                  )}
-
-                  <div className="flex flex-col justify-between card-body ">
-                    <h2 className="text-lg font-bold card-title">
-                      {blog.title}
-                    </h2>
-                    <div className="flex items-center justify-between mb-2 text-sm ">
-                      <p>{blog.author}</p>
-                      {blog.author && <p>|</p>}
-
-                      <p>{blog.publishedDate}</p>
-                    </div>
-                    <p className="overflow-hidden text-ellipsis">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: limitDescription(
-                            blog.coverText || blog.description
-                          ),
-                        }}
-                      />
-                    </p>
-                    {blog.description && blog.coverText && (
-                      <p className="mt-2 font-semibold text-primary">
-                        Read More
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </Link>
+              handleBlogClick={handleBlogClick}
+            />
           ))
         )}
       </div>

@@ -77,7 +77,7 @@ const PopularBlogs = () => {
               className="mb-8 "
               onClick={() => handleBlogClick(blog.id)}
             >
-              <div className="w-full h-full transition duration-300 delay-150 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 ">
+              <div className="w-full h-full transition duration-180 delay-120 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2 ">
                 {blog.coverImage && (
                   <figure>
                     <img
@@ -96,7 +96,7 @@ const PopularBlogs = () => {
                     <p>{blog.publishedDate}</p>
                   </div>
                   <p className="overflow-hidden text-ellipsis">
-                    <div
+                    <div className="text-base"
                       dangerouslySetInnerHTML={{
                         __html: limitDescription(
                           blog.coverText || blog.description

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import RichTextEditor from "../components/RichTextEditor";
 import Tables from "../components/Tables"; // Import Tables component
 import { app } from "../firebaseConfig"; // Assuming firebase is initialized in firebaseConfig.js
+import { useAuth } from "../context/AuthContext";
 
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -27,6 +28,7 @@ const BlogForm = () => {
   const [editorKey, setEditorKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Function to upload images
   const uploadImage = async (file) => {
@@ -160,9 +162,31 @@ const BlogForm = () => {
       };
 
       // Save the blog data to Firestore
-      const blogRef = doc(collection(db, "blogs"));
-      await setDoc(blogRef, blogData);
-      console.log("Blog saved:", blogData);
+      const currentUser = user;
+
+      if (!currentUser) {
+        throw new Error("No user is logged in.");
+      }
+
+      // Get the current user's UID
+      const userId = currentUser.uid;
+
+      // Save the blog data in the 'blogs' collection
+      const blogRef = doc(collection(db, "blogs")); // Auto-generated blog document ID
+      await setDoc(blogRef, { ...blogData, userId }); // Store blog with userId to identify who created it
+
+      // Reference to the user's document in the 'users' collection
+      const userRef = doc(db, "users", userId);
+
+      // Reference to the 'blogs' subcollection inside the user's document to save blog ID
+      const userBlogsRef = doc(collection(userRef, "blogs"), blogRef.id); // Save the reference to this blog in the user's 'blogs' subcollection
+
+      // Save a reference to the blog in the user's 'blogs' subcollection
+      await setDoc(userBlogsRef, {
+        blogId: blogRef.id, // Save the blog's ID in the user's subcollection
+        title: blogData.title, // Optionally save some metadata like the title for easy reference
+        createdAt: new Date(), // Optionally add a timestamp
+      });
 
       alert("Blog submitted successfully!");
       setTitle("");

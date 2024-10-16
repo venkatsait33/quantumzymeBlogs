@@ -32,14 +32,9 @@ const BlogDisplay = () => {
           <tbody>
             {table.rows.map((row, rowIndex) => {
               // Process each row
-              const rowArray =
-                typeof row === "string"
-                  ? row.match(/(?:"[^"]*"|[^,]+)(?=\s*,|\s*$)/g).map(
-                      (cell) =>
-                        cell.replace(/^"|"$/g, "").replace(/,/g, " ").trim() // Remove quotes and replace inner commas with spaces
-                    )
-                  : row;
-
+              const rowArray = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(
+                (cell) => cell.trim().replace(/^"|"$/g, "") // Trim and remove quotes
+              );
               // If row has fewer cells than headings, add empty cells
               while (rowArray.length < table.headings.length) {
                 rowArray.push(""); // Add empty cells if row is short
@@ -57,13 +52,14 @@ const BlogDisplay = () => {
             })}
           </tbody>
         </table>
-        {tableTitles && tableTitles.length > 0 && <div>
-          <h3 className="mt-2 mb-2 text-lg font-bold text-center">
-            {(tableTitles && tableTitles[tableIndex]) ||
-              `Table ${tableIndex + 1}`}
-          </h3>
-        </div>}
-        
+        {tableTitles && tableTitles.length > 0 && (
+          <div>
+            <h3 className="mt-2 mb-2 text-lg font-bold text-center">
+              {(tableTitles && tableTitles[tableIndex]) ||
+                `Table ${tableIndex + 1}`}
+            </h3>
+          </div>
+        )}
       </div>
     ));
   };
@@ -80,7 +76,7 @@ const BlogDisplay = () => {
         </button>
       </div>
 
-      <div className="p-2 mt-14">
+      <div className="p-2 mt-14 ">
         <PageCover blog={blog} />
       </div>
       <div className="flex">
@@ -146,7 +142,7 @@ const BlogDisplay = () => {
                               <img
                                 src={section.image}
                                 alt={`Image ${index}`}
-                                className="object-scale-down w-full h-full rounded"
+                                className="object-scale-down w-full h-full rounded mix-blend-screen"
                               />
                             )}
                             {section.imageTitle && (
@@ -201,7 +197,7 @@ const BlogDisplay = () => {
           )}
         </div>
         {/* Sidebar area - Hidden on small screens */}
-        <div className="sm:hidden md:block w-[20%] mt-10">
+        <div className="sm:hidden md:block lg:block  w-[calc(100%-78%)] mt-10">
           <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <RecentPost />
           </div>

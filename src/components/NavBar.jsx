@@ -1,16 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../logo.png";
+import { useAuth } from "../context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 const NavBar = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
   return (
-    <div className="fixed top-0 left-0 z-10 gap-2 navbar bg-base-300 ">
+    <div className="fixed sm:h-12 top-0 left-0 z-10 gap-2 navbar bg-base-300 ">
       <div className="flex-1 px-2 ">
         <Link to="/">
-          <img
-            src={logo}
-            className="w-12 h-12 "
-            alt=""
-          />
+          <img src={logo} className="w-12 h-12 " alt="" />
         </Link>
       </div>
       <div className="">
@@ -62,6 +74,43 @@ const NavBar = () => {
 
           <li className="link link-hover">Careers</li>
         </ul>
+      </div>
+      <div className="menu menu-horizontal">
+        {user ? (
+          <div>
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-8 rounded-full">
+                  <img alt="user name" src={user.photoURL} />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              >
+                <li>
+                  <h2 className="justify-between">{user.displayName}</h2>
+                </li>
+                <li>
+                  <Link to="/userBlogs">Blogs</Link>
+                </li>
+                <li>
+                  <a onClick={handleLogOut}>Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <Link to="/login" className="btn btn-outline btn-sm">
+              login
+            </Link>
+          </div>
+        )}
       </div>
       <div className="">
         <label className="swap swap-rotate">
