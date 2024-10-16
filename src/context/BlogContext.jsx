@@ -21,7 +21,7 @@ export const BlogProvider = ({ children }) => {
           ...doc.data(),
         }));
         setBlogs(blogsData);
-        console.log(blogsData);
+       
         
       } catch (error) {
         console.error("Error fetching blogs:", error);
