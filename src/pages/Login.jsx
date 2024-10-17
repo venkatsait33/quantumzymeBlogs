@@ -10,8 +10,7 @@ const Login = () => {
   const handleLogin = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
-        console.log("user Info", user);
+        const user = result.user;   
         navigate("/");
       })
       .catch((error) => {
