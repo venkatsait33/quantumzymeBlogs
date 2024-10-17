@@ -80,7 +80,7 @@ const BlogDisplay = () => {
       </div>
       <div className="flex">
         {/* Main content area */}
-        <div className="p-6 mx-auto md:w-[70%] ">
+        <div className="p-6 mx-auto md:w-[75%] ">
           {Object.keys(blog).length === 0 ? (
             <p>No blogs available.</p>
           ) : (
@@ -127,8 +127,8 @@ const BlogDisplay = () => {
                   <p
                     style={{
                       wordBreak: "break-word",
-                      marginBottom: "20px",
-                      lineHeight: "1.6",
+                      margininset-block-end: "20px",
+                      lineblock-size: "1.6",
                       textIndent: "25px",
                     }}
                     className="max-sm:text-sm"
@@ -161,8 +161,8 @@ const BlogDisplay = () => {
                             <p
                               style={{
                                 wordBreak: "break-word",
-                                marginBottom: "20px",
-                                lineHeight: "1.6",
+                                margininset-block-end: "20px",
+                                lineblock-size: "1.6",
                               }}
                             >
                               <div
@@ -185,8 +185,8 @@ const BlogDisplay = () => {
                       <p
                         style={{
                           wordBreak: "break-word",
-                          marginBottom: "20px",
-                          lineHeight: "1.6",
+                          margininset-block-end: "20px",
+                          lineblock-size: "1.6",
                         }}
                       >
                         <div
@@ -202,8 +202,8 @@ const BlogDisplay = () => {
           )}
         </div>
         {/* Sidebar area - Hidden on small screens */}
-        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-78%)] mt-10">
-          <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto">
+        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-75%)] mt-10">
+          <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto w-full">
             <RecentPost />
           </div>
         </div>

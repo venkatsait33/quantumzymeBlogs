@@ -22,7 +22,7 @@ const NavBar = () => {
     <div className="fixed top-0 left-0 z-10 gap-2 navbar bg-base-300 max-sm:h-14 ">
       <div className="flex-1 px-2 menu menu-horizontal">
         <Link to="/">
-          <img src={logo} className="w-12 h-12 rounded bg-base-300"  alt="" />
+          <img src={logo} className="w-12 h-12 rounded bg-base-300" alt="" />
         </Link>
       </div>
       <div>
@@ -65,14 +65,13 @@ const NavBar = () => {
               </details>
             </li>
             <li>
-              
-            <details>
-    <summary className="link link-hover sm:text-sm">Technology</summary>
-            </details>
+              <details>
+                <summary className="link link-hover sm:text-sm">
+                  Technology
+                </summary>
+              </details>
             </li>
-          
-              
-        
+
             <li>
               <details className="">
                 <summary className="sm:text-sm">Services</summary>
@@ -217,7 +216,11 @@ const NavBar = () => {
         <div className=" menu horizontal">
           <label className="swap swap-rotate">
             {/* this hidden checkbox controls the state */}
-            <input type="checkbox" className="theme-controller" value="light" />
+            <input
+              type="checkbox"
+              className="theme-controller"
+              value="garden"
+            />
 
             {/* sun icon */}
             <svg
