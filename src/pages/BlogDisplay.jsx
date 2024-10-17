@@ -127,11 +127,10 @@ const BlogDisplay = () => {
                   <p
                     style={{
                       wordBreak: "break-word",
-                      margininset-block-end: "20px",
-                      lineblock-size: "1.6",
+                      margininsetBlockEnd: "20px",
+                      lineblockSize: "1.6",
                       textIndent: "25px",
                     }}
-                    className="max-sm:text-sm"
                   >
                     <div
                       dangerouslySetInnerHTML={{ __html: blog.description }}
@@ -161,8 +160,8 @@ const BlogDisplay = () => {
                             <p
                               style={{
                                 wordBreak: "break-word",
-                                margininset-block-end: "20px",
-                                lineblock-size: "1.6",
+                                margininsetBlockEnd: "20px",
+                                lineblockSize: "1.6",
                               }}
                             >
                               <div
@@ -185,8 +184,8 @@ const BlogDisplay = () => {
                       <p
                         style={{
                           wordBreak: "break-word",
-                          margininset-block-end: "20px",
-                          lineblock-size: "1.6",
+                          margininSetBlockEnd: "20px",
+                          lineblockSize: "1.6",
                         }}
                       >
                         <div
