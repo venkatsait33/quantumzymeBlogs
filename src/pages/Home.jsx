@@ -10,7 +10,9 @@ const Home = () => {
         <Link to="/blogPages" className="m-2 btn btn-secondary">
           View Blogs
         </Link>
-        
+        <Link to="/home" className="m-2 btn btn-secondary">
+          HomePage
+        </Link>
       </div>
     </div>
   );

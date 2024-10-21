@@ -89,16 +89,13 @@ const BlogForm = () => {
   };
 
   const transformTableData = (tables) => {
-    console.log("Received tables:", tables);
-
     if (!Array.isArray(tables)) {
       console.warn("Warning: tables is not an array, returning empty array");
       return []; // Return an empty array if tables is not an array
     }
 
     return tables.map((table, idx) => {
-      console.log(`Processing table ${idx}:`, table);
-
+      //console.log(`Processing table ${idx}:`, table);
       return {
         headings: table.headings || [],
         // Flatten rows to avoid nested arrays
@@ -136,7 +133,7 @@ const BlogForm = () => {
           const tableData = transformTableData(
             section.tableData?.tableData || []
           );
-          console.log(tableData);
+          //console.log(tableData);
 
           return {
             image: imageUrl,
@@ -167,20 +164,15 @@ const BlogForm = () => {
       if (!currentUser) {
         throw new Error("No user is logged in.");
       }
-
       // Get the current user's UID
       const userId = currentUser.uid;
-
       // Save the blog data in the 'blogs' collection
       const blogRef = doc(collection(db, "blogs")); // Auto-generated blog document ID
       await setDoc(blogRef, { ...blogData, userId }); // Store blog with userId to identify who created it
-
       // Reference to the user's document in the 'users' collection
       const userRef = doc(db, "users", userId);
-
       // Reference to the 'blogs' subcollection inside the user's document to save blog ID
       const userBlogsRef = doc(collection(userRef, "blogs"), blogRef.id); // Save the reference to this blog in the user's 'blogs' subcollection
-
       // Save a reference to the blog in the user's 'blogs' subcollection
       await setDoc(userBlogsRef, {
         blogId: blogRef.id, // Save the blog's ID in the user's subcollection
@@ -206,150 +198,178 @@ const BlogForm = () => {
   };
 
   return (
-    <div className="mx-auto mb-10 mt-10 lg:w-[80%] card bg-base-100 shrink-0">
-      <div className="mx-auto border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
-        <form onSubmit={handleSubmit} className="gap-2 card-body">
-          {/* Form Fields for Title, Cover Image, Author, Date, Description */}
-          <div className="form-control">
-            <label className="label">Title:</label>
-            <input
-              type="text"
-              className="w-full input input-bordered"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
+    <div className="">
+      <div className="mx-auto mb-10 mt-14 lg:w-[80%] card bg-base-100 shrink-0">
+        <div className="mx-auto border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
+          <form onSubmit={handleSubmit} className="gap-2 card-body">
+            {/* Form Fields for Title, Cover Image, Author, Date, Description */}
+            <div className="form-control">
+              <label className="label">Title:</label>
+              <input
+                type="text"
+                className="w-full input input-bordered"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
 
-          <div className="form-control">
-            <label className="label">Cover Image:</label>
-            <input
-              type="file"
-              className="w-full file-input"
-              accept="image/*"
-              onChange={(e) => setCoverImageFile(e.target.files[0])}
-            />
-          </div>
+            <div className="form-control">
+              <label className="label">Cover Image:</label>
+              <input
+                type="file"
+                className="w-full file-input"
+                accept="image/*"
+                onChange={(e) => setCoverImageFile(e.target.files[0])}
+              />
+            </div>
 
-          <div className="form-control">
-            <label className="label">Author:</label>
-            <input
-              type="text"
-              className="w-full input input-bordered"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-            />
-          </div>
+            <div className="form-control">
+              <label className="label">Author:</label>
+              <input
+                type="text"
+                className="w-full input input-bordered"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              />
+            </div>
 
-          <div className="form-control">
-            <label className="label">Published Date:</label>
-            <input
-              type="date"
-              value={publishedDate}
-              className="w-full input input-bordered"
-              onChange={(e) => setPublishedDate(e.target.value)}
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">Cover page Summery:</label>
-            <span className="m-2 text-xs text-center">
-              This is displayed on the cover page of blog and write about your
-              theses in 250 words
-            </span>
-            <RichTextEditor
-              keyProp={editorKey}
-              defaultValue={coverText}
-              onRichTextEditorChange={(e) => setCoverText(e.target.value)}
-            />
-          </div>
+            <div className="form-control">
+              <label className="label">Published Date:</label>
+              <input
+                type="date"
+                value={publishedDate}
+                className="w-full input input-bordered"
+                onChange={(e) => setPublishedDate(e.target.value)}
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">Cover page Summery:</label>
+              <span className="m-2 text-xs text-center">
+                This is displayed on the cover page of blog and write about your
+                theses in 250 words
+              </span>
+              <span className="text-xs text-center text-orange-300">
+                If the text is highlighted with any color, select all the text
+                and click on the{" "}
+                <span className="font-bold text-orange-500">Tx</span> to remove
+                the color of text
+              </span>
+              <RichTextEditor
+                keyProp={editorKey}
+                defaultValue={coverText}
+                onRichTextEditorChange={(e) => setCoverText(e.target.value)}
+              />
+            </div>
 
-          <div className="form-control">
-            <label className="label">Description:</label>
-            <RichTextEditor
-              keyProp={editorKey}
-              defaultValue={description}
-              onRichTextEditorChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
+            <div className="form-control">
+              <label className="label">Description:</label>
+              <span className="text-xs text-center text-orange-300">
+                If the text is highlighted with any color, select all the text
+                and click on the{" "}
+                <span className="font-bold text-orange-500">Tx</span> to remove
+                the color of text
+              </span>
+              <RichTextEditor
+                keyProp={editorKey}
+                defaultValue={description}
+                onRichTextEditorChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
 
-          {/* Add Section Component */}
-          <div className=" form-control">
-            <h4 className="label">Sections</h4>
-            {sections.map((section, index) => (
-              <div key={index} className="gap-2 p-2 mb-4 border rounded">
-                <div className="form-control ">
-                  <label className="label">Image:</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="w-full file-input"
-                    onChange={(e) => handleFileChange(index, e.target.files[0])}
-                  />
+            {/* Add Section Component */}
+            <div className=" form-control">
+              <h4 className="label">Sections</h4>
+              {sections.map((section, index) => (
+                <div key={index} className="gap-2 p-2 mb-4 border rounded">
+                  <div className="form-control ">
+                    <label className="label">Image:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="w-full file-input"
+                      onChange={(e) =>
+                        handleFileChange(index, e.target.files[0])
+                      }
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label">Image Title:</label>
+                    <input
+                      type="text"
+                      value={section.imageTitle}
+                      className="w-full input input-bordered"
+                      onChange={(e) =>
+                        handleImageTitleChange(index, e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label">Content:</label>
+                    <span className="text-xs text-center text-orange-300">
+                      If the text is highlighted with any color, select all the
+                      text and click on the{" "}
+                      <span className="font-bold text-orange-500">Tx</span> to
+                      remove the color of text
+                    </span>
+                    <RichTextEditor
+                      defaultValue={section.content}
+                      onRichTextEditorChange={(e) =>
+                        handleContentChange(index, e.target.value)
+                      }
+                    />
+                  </div>
+                  <Tables sectionIndex={index} onSaveTable={handleSaveTable} />
+
+                  <button
+                    type="button"
+                    className="w-full mt-2 btn btn-error btn-sm lg:btn"
+                    onClick={() => removeSection(index)}
+                  >
+                    Remove Section
+                  </button>
                 </div>
-                <div className="form-control">
-                  <label className="label">Image Title:</label>
-                  <input
-                    type="text"
-                    value={section.imageTitle}
-                    className="w-full input input-bordered"
-                    onChange={(e) =>
-                      handleImageTitleChange(index, e.target.value)
-                    }
-                  />
-                </div>
-                <div className="form-control">
-                  <label className="label">Content:</label>
-                  <RichTextEditor
-                    defaultValue={section.content}
-                    onRichTextEditorChange={(e) =>
-                      handleContentChange(index, e.target.value)
-                    }
-                  />
-                </div>
-                <Tables sectionIndex={index} onSaveTable={handleSaveTable} />
+              ))}
+              <button
+                type="button"
+                className="mt-2 text-base btn btn-primary max-sm:btn-sm"
+                onClick={addSection}
+              >
+                Add Section
+              </button>
+            </div>
 
-                <button
-                  type="button"
-                  className="w-full mt-2 btn btn-error btn-sm lg:btn"
-                  onClick={() => removeSection(index)}
-                >
-                  Remove Section
-                </button>
-              </div>
-            ))}
+            <div className="form-control">
+              <label className="label">Reference:</label>
+              <span className="text-xs text-center text-orange-300">
+                If the text is highlighted with any color, select all the text
+                and click on the{" "}
+                <span className="font-bold text-orange-500">Tx</span> to remove
+                the color of text
+              </span>
+              <RichTextEditor
+                keyProp={editorKey}
+                defaultValue={reference}
+                onRichTextEditorChange={(e) => setReference(e.target.value)}
+              />
+            </div>
+
             <button
-              type="button"
-              className="mt-2 text-base btn btn-primary btn-sm lg:btn"
-              onClick={addSection}
+              type="submit"
+              className="mt-2 text-base max-sm:btn-sm btn btn-secondary"
+              disabled={loading}
             >
-              Add Section
+              {loading ? (
+                <div className="flex items-center">
+                  <span className="loading loading-infinity loading-md"></span>{" "}
+                  {/* Spinner */}
+                  Submitting...
+                </div>
+              ) : (
+                "Submit"
+              )}
             </button>
-          </div>
-
-          <div className="form-control">
-            <label className="label">Reference:</label>
-            <RichTextEditor
-              keyProp={editorKey}
-              defaultValue={reference}
-              onRichTextEditorChange={(e) => setReference(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="mt-2 text-base lg:btn btn-sm btn btn-secondary"
-            disabled={loading}
-          >
-            {loading ? (
-              <div className="flex items-center">
-                <span className="loading loading-infinity loading-md"></span>{" "}
-                {/* Spinner */}
-                Submitting...
-              </div>
-            ) : (
-              "Submit"
-            )}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

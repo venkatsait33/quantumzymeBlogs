@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
 import noimage from "../assets/no-image.jpg";
 
-const BlogCard = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
+const BlogCard = ({ blog, limitDescription, handleBlogClick, clicks }) => {
   return (
     <Link
       to={`/blogs/${blog.id}`}
-      key={key}
+      key={blog.id}
       className="mb-8"
       onClick={() => handleBlogClick(blog.id)}
     >
       {blog && (
-        <div className="w-full h-full transition delay-200 shadow-xl duration-250 cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2 ">
+        <div className="w-full h-full transition duration-300 delay-300 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2">
           <figure>
             <img
               src={blog.coverImage || noimage}
@@ -28,7 +28,7 @@ const BlogCard = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
               <p>{blog.publishedDate}</p>
             </div>
             {limitDescription && (
-              <p className="overflow-hidden text-sm text-ellipsis">
+              <div className="overflow-hidden text-sm text-ellipsis">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: limitDescription(
@@ -36,7 +36,7 @@ const BlogCard = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
                     ),
                   }}
                 />
-              </p>
+              </div>
             )}
             {blog.description && blog.coverText && (
               <p className="mt-2 font-semibold text-primary">Read More</p>

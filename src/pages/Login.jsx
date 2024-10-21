@@ -1,5 +1,4 @@
 import { signInWithPopup } from "firebase/auth";
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, provider } from "../firebaseConfig";
 import NavBar from "../components/NavBar";
@@ -20,12 +19,12 @@ const Login = () => {
   return (
     <>
       <NavBar />
-      <div className="container mx-auto justify-center items-center flex flex-col min-h-screen">
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <div className="container flex flex-col items-center justify-center min-h-screen mx-auto">
+        <h1 className="mb-4 text-2xl font-bold">Login</h1>
         <button onClick={handleLogin} className="btn btn-primary">
           Sign in with Google
         </button>
-        <Link to="/" className="btn btn-outline mt-4">
+        <Link to="/" className="mt-4 btn btn-outline">
           Home
         </Link>
       </div>

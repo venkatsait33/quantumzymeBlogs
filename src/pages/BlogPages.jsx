@@ -1,4 +1,3 @@
-import React from 'react'
 import PopularBlogs from './PopularBlogs'
 import Blogs from './Blogs'
 

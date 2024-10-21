@@ -17,7 +17,6 @@ const Blogs = () => {
 
   const handleBlogClick = async (blogId) => {
     const blogRef = doc(db, "blogs", blogId);
-
     // Increment the clicks field by 1
     try {
       // Increment the clicks field by 1
@@ -31,7 +30,7 @@ const Blogs = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-center ">Blogs</h1>
+      <h1 className="text-3xl font-bold text-center underline ">Blogs</h1>
       <div className="grid max-w-4xl grid-cols-1 gap-6 p-6 mx-auto sm:grid-cols-2 lg:grid-cols-2">
         {blogs.length === 0 ? (
           <div className="mt-10 text-center block-center">
@@ -42,7 +41,6 @@ const Blogs = () => {
             <BlogCard
               blog={blog}
               limitDescription={limitDescription}
-              key={blog.id}
               handleBlogClick={handleBlogClick}
             />
           ))

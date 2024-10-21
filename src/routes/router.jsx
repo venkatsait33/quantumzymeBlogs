@@ -8,8 +8,9 @@ import BlogPages from "../pages/BlogPages";
 import Login from "../pages/Login";
 import PrivateRoute from "./PrivateRoute";
 import UserBlogs from "../pages/UserBlogs";
-import errorImage from "../assets/error-404-page-not-found-vector-14463951.jpg";
 import NavBar from "../components/NavBar";
+import errorImage from "../assets/error-404-page-not-found-vector-14463951.jpg";
+import HomePage from "../pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "/addBlog",
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
     element: (
       <div>
         <NavBar />
-        <img src={errorImage} alt="" className=" object-scale-down " />
+        <img src={errorImage} alt="" className="object-scale-down " />
       </div>
     ),
   },

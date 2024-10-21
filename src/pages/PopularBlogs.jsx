@@ -9,7 +9,6 @@ import {
   updateDoc,
   increment,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
 import { db } from "../firebaseConfig"; // Assuming your Firestore config is exported here
 import BlogCard from "../components/BlogCard";
 
@@ -37,7 +36,6 @@ const PopularBlogs = () => {
           id: doc.id,
           ...doc.data(),
         }));
-
         setPopularBlogs(blogsList);
       } catch (error) {
         console.error("Error fetching popular blogs: ", error);
@@ -75,7 +73,6 @@ const PopularBlogs = () => {
             <BlogCard
               blog={blog}
               limitDescription={limitDescription}
-              key={blog.id}
               handleBlogClick={handleBlogClick}
               clicks={blog.clicks}
             />
