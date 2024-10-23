@@ -15,28 +15,12 @@ import Card from "./Card";
 
 const CarouselImages = () => {
   const [popularBlogs, setPopularBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState([]);
-
-  const limitDescription = (description, limit = 250) => {
-    return description.length > limit
-      ? `${description.slice(0, limit)}...`
-      : description;
-  };
 
   // Function to chunk blogs into groups for carousel slides
-  const chunkArray = (arr, chunkSize) => {
-    let chunks = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-      chunks.push(arr.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
 
   useEffect(() => {
     // Function to fetch the most popular blogs
     const fetchPopularBlogs = async () => {
-      setLoading(true);
       try {
         const blogsRef = collection(db, "blogs");
         const q = query(blogsRef, orderBy("clicks", "desc"), limit(5)); // Adjust limit as needed
@@ -49,12 +33,8 @@ const CarouselImages = () => {
         setPopularBlogs(blogsList);
 
         // Chunk the blogs into groups for carousel slides
-        const chunkedItems = chunkArray(blogsList, 1); // Adjust chunk size (e.g., 2 blogs per slide)
-        setItems(chunkedItems);
       } catch (error) {
         console.error("Error fetching popular blogs: ", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchPopularBlogs();
@@ -75,7 +55,7 @@ const CarouselImages = () => {
 
   return (
     <div className="w-full ">
-      <div className="flex flex-row w-full max-w-screen-xl gap-3 overflow-auto carousel rounded-box max-md:max-w-2xl max-sm:max-w-sm">
+      <div className="flex flex-row w-full max-w-screen-xl gap-3 overflow-auto carousel rounded-box max-lg:max-w-2xl max-sm:max-w-sm">
         {popularBlogs.map((group, index) => (
           <div key={index} className="m-2 ">
             <div key={group.id} className="w-full h-full">

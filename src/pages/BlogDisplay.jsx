@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
+import { BiUpArrowAlt } from "react-icons/bi"; // Import arrow-up icon
 import PageCover from "../components/PageCover";
 import RecentPost from "../components/RecentPost";
-import { BiArrowBack } from "react-icons/bi";
 import { useBlogContext } from "../context/BlogContext";
 
 const BlogDisplay = () => {
@@ -9,59 +11,33 @@ const BlogDisplay = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTopButton(true);
+      } else {
+        setShowScrollTopButton(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll effect
+    });
+  };
+
   if (loading) return <p>Loading...</p>;
 
   const blog = blogs.find((blog) => blog.id === id);
 
   if (!blog) return <p>Blog not found</p>;
-
-  const renderTables = (tables, tableTitles) => {
-    return tables.map((table, tableIndex) => (
-      <div key={tableIndex} className="m-4 overflow-x-auto">
-        <table className="table table-zebra">
-          <thead>
-            <tr>
-              {table.headings.map((heading, headingIndex) => (
-                <th key={headingIndex} className="px-4 py-2 border">
-                  {heading || `Heading ${headingIndex + 1}`}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {table.rows.map((row, rowIndex) => {
-              // Process each row
-              const rowArray = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(
-                (cell) => cell.trim().replace(/^"|"$/g, "") // Trim and remove quotes
-              );
-              // If row has fewer cells than headings, add empty cells
-              while (rowArray.length < table.headings.length) {
-                rowArray.push(""); // Add empty cells if row is short
-              }
-
-              return (
-                <tr key={rowIndex}>
-                  {rowArray.map((cell, colIndex) => (
-                    <td key={colIndex} className="px-4 py-2 border">
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        {tableTitles && tableTitles.length > 0 && (
-          <div>
-            <h3 className="mt-2 mb-2 text-lg font-bold text-center">
-              {(tableTitles && tableTitles[tableIndex]) ||
-                `Table ${tableIndex + 1}`}
-            </h3>
-          </div>
-        )}
-      </div>
-    ));
-  };
 
   return (
     <div>
@@ -69,29 +45,26 @@ const BlogDisplay = () => {
       <div className="fixed z-50 mt-20 top-4 left-4">
         <button
           onClick={() => navigate(-1)}
-          className="text-xl btn btn-sm btn-outline btn-primary"
+          className="text-xl btn btn-sm hover:btn-outline"
         >
           <BiArrowBack className="text-xl" />
         </button>
       </div>
 
-      <div className="p-2 mt-14 ">
+      <div className="mt-14 ">
         <PageCover blog={blog} />
       </div>
       <div className="flex">
         {/* Main content area */}
-        <div className="p-6 mx-auto md:w-[75%] ">
+        <div className="p-2 mx-auto md:w-[78%]  ">
           {Object.keys(blog).length === 0 ? (
             <p>No blogs available.</p>
           ) : (
-            <div
-              key={blog.id}
-              className="p-2 mb-8 overflow-hidden rounded-lg shadow-lg"
-            >
+            <div key={blog.id} className="p-2 mb-8 rounded-lg">
               <div className="flex">
                 <div className="mt-12">
                   {blog.title && (
-                    <h2 className="mb-4 text-base font-bold text-center md:text-5xl">
+                    <h2 className="mb-4 text-base font-bold text-center md:text-5xl ">
                       {blog.title}
                     </h2>
                   )}
@@ -122,31 +95,36 @@ const BlogDisplay = () => {
                       </p>
                     )}
                   </div>
-                  <div className="m-2 divider"></div>
+                  <div className="m-2 divider divider-neutral"></div>
 
-                  <p
-                    style={{
-                      wordBreak: "break-word",
-                      margininsetBlockEnd: "20px",
-                      lineblockSize: "1.6",
-                      textIndent: "25px",
-                    }}
-                  >
-                    <div
-                      dangerouslySetInnerHTML={{ __html: blog.description }}
-                    />
-                  </p>
+                  <div className="">
+                    <p
+                      style={{
+                        wordBreak: "break-word",
+                        margininsetBlockEnd: "20px",
+                        lineblockSize: "1.6",
+                        textIndent: "25px",
+                      }}
+                    >
+                      <div
+                        className="overflow-clip"
+                        dangerouslySetInnerHTML={{ __html: blog.description }}
+                      />
+                    </p>
+                  </div>
                   {blog.sections &&
                     blog.sections.map((section, index) => (
                       <div key={index}>
                         {section.image && (
                           <>
                             {section.image && (
-                              <img
-                                src={section.image}
-                                alt={`Image ${index}`}
-                                className="object-scale-down w-full h-full rounded"
-                              />
+                              <div className="flex justify-center ">
+                                <img
+                                  src={section.image}
+                                  alt={`Image ${index}`}
+                                  className="object-scale-down w-[85%] h-full rounded"
+                                />
+                              </div>
                             )}
                             {section.imageTitle && (
                               <h2 className="mt-2 text-center">
@@ -156,7 +134,7 @@ const BlogDisplay = () => {
                           </>
                         )}
                         {section.content && (
-                          <div className=" max-sm:text-sm">
+                          <div className="">
                             <p
                               style={{
                                 wordBreak: "break-word",
@@ -165,7 +143,7 @@ const BlogDisplay = () => {
                               }}
                             >
                               <div
-                                className="p-2"
+                                className="m-4"
                                 dangerouslySetInnerHTML={{
                                   __html: section.content,
                                 }}
@@ -173,9 +151,11 @@ const BlogDisplay = () => {
                             </p>
                           </div>
                         )}
-                        {section.tableData &&
-                          section.tableData.length > 0 &&
-                          renderTables(section.tableData, section.tableTitle)}
+                        <div className=" max-md:w-[85%]">
+                          {section.tableData &&
+                            section.tableData.length > 0 &&
+                            renderTables(section.tableData, section.tableTitle)}
+                        </div>
                       </div>
                     ))}
                   {blog.reference && (
@@ -201,12 +181,22 @@ const BlogDisplay = () => {
           )}
         </div>
         {/* Sidebar area - Hidden on small screens */}
-        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-75%)] mt-10">
+        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-80%)] mt-10">
           <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto w-full">
             <RecentPost />
           </div>
         </div>
       </div>
+
+      {/* Move to Top Button */}
+      {showScrollTopButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed z-50 p-2 text-white bg-black rounded-full bottom-8 right-8 hover:bg-gray-700"
+        >
+          <BiUpArrowAlt className="text-2xl" />
+        </button>
+      )}
     </div>
   );
 };

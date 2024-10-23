@@ -4,7 +4,7 @@ import { doc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import BlogCard from "../components/BlogCard";
 
-const Blogs = () => {
+const StickyBlogs = () => {
   const { blogs, loading } = useBlogContext();
 
   if (loading) return <p>Loading...</p>;
@@ -30,24 +30,26 @@ const Blogs = () => {
 
   return (
     <div className="max-lg:w-[85%] mx-auto">
-      <h1 className="text-3xl font-bold text-center underline ">Blogs</h1>
-      <div className="grid grid-cols-1 gap-6 p-6 mx-auto sm:grid-cols-2 lg:grid-cols-3">
+      <h1 className="text-3xl font-bold text-center underline ">Sticky Blogs</h1>
+      <div className="grid grid-cols-1 gap-6 p-6 mx-auto ">
         {blogs.length === 0 ? (
           <div className="mt-10 text-center block-center">
             <p className=" btn">No blogs available.</p>
           </div>
         ) : (
-          blogs.map((blog) => (
-            <BlogCard
-              blog={blog}
-              limitDescription={limitDescription}
-              handleBlogClick={handleBlogClick}
-            />
-          ))
+          blogs
+            .slice(0, 4)
+            .map((blog) => (
+              <BlogCard
+                blog={blog}
+                limitDescription={limitDescription}
+                handleBlogClick={handleBlogClick}
+              />
+            ))
         )}
       </div>
     </div>
   );
 };
 
-export default Blogs;
+export default StickyBlogs;

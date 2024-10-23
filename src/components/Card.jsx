@@ -12,12 +12,12 @@ const Card = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
       onClick={() => handleBlogClick(blog.id)}
     >
       {blog && (
-        <div className="w-[280px] m-2  shadow-slate-500  shadow-md rounded-xl">
+        <div className="w-[280px] m-2 shadow-md rounded-xl">
           <figure className="h-[200px] w-full">
             <img
               src={blog.coverImage || noimage}
               alt={blog.title}
-              className="object-scale-down w-full h-full p-2 rounded "
+              className="object-scale-down w-full h-full p-2 rounded aspect-video "
             />
           </figure>
 

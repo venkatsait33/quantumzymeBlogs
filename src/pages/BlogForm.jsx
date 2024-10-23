@@ -199,8 +199,8 @@ const BlogForm = () => {
 
   return (
     <div className="">
-      <div className="mx-auto mb-10 mt-14 lg:w-[80%] card bg-base-100 shrink-0">
-        <div className="mx-auto border mt-10 shadow-2xl w-[80%] card bg-base-100 shrink-0">
+      <div className="mx-auto  mt-14 lg:w-[80%] card shrink-0">
+        <div className="mx-auto border mt-10 shadow-2xl w-[80%] card  shrink-0 mb-10">
           <form onSubmit={handleSubmit} className="gap-2 card-body">
             {/* Form Fields for Title, Cover Image, Author, Date, Description */}
             <div className="form-control">

@@ -7,7 +7,7 @@ const PageCover = ({ blog }) => {
         style={{
           position: "relative",
         }}
-        className="w-full h-52 md:h-96 lg:h-128 xl:h-160"
+        className=" h-52 md:h-96 lg:h-128 xl:h-160"
       >
         {/* Image with opacity */}
         <div

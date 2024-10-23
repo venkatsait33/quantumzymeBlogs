@@ -5,12 +5,12 @@ import Footer from "./components/Footer";
 
 const App = () => {
   return (
-    <div className="min-h-screen ">
-      <NavBar/>
-      <div className="relative w-full h-full max-sm:mt-16">
+    <div className="min-h-screen dark:text-white dark:bg-black">
+      <NavBar />
+      <div className="relative w-full h-full max-sm:mt-16 background">
         <Outlet />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

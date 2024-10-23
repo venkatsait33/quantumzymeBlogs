@@ -10,12 +10,12 @@ const BlogCard = ({ blog, limitDescription, handleBlogClick, clicks }) => {
       onClick={() => handleBlogClick(blog.id)}
     >
       {blog && (
-        <div className="w-full h-full transition duration-300 delay-300 shadow-xl cease-in-out card bg-base-300 hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2">
+        <div className="w-full h-full transition duration-300 delay-300 shadow-xl cease-in-out card hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2">
           <figure>
             <img
               src={blog.coverImage || noimage}
               alt={blog.title}
-              className="object-cover w-full p-2 h-44 image-full"
+              className="object-cover w-full p-2 h-44 image-full aspect-video"
             />
           </figure>
 
@@ -39,11 +39,11 @@ const BlogCard = ({ blog, limitDescription, handleBlogClick, clicks }) => {
               </div>
             )}
             {blog.description && blog.coverText && (
-              <p className="mt-2 font-semibold text-primary">Read More</p>
+              <p className="mt-2 font-semibold text-green-400">Read More</p>
             )}
             {clicks && (
               <div className="">
-                <p className="text-sm link link-primary text-end">
+                <p className="text-sm text-black link text-end">
                   {clicks} {clicks === 1 ? "Click" : "Clicks"}
                 </p>
               </div>
