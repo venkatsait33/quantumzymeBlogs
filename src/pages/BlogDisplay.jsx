@@ -35,6 +35,53 @@ const BlogDisplay = () => {
     });
   };
 
+  const renderTables = (tables, tableTitles) => {
+    return tables.map((table, tableIndex) => (
+      <div key={tableIndex} className="m-4 overflow-x-auto">
+        <table className="table ">
+          <thead>
+            <tr>
+              {table.headings.map((heading, headingIndex) => (
+                <th key={headingIndex} className="px-4 py-2 border">
+                  {heading || `Heading ${headingIndex + 1}`}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row, rowIndex) => {
+              // Process each row
+              const rowArray = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(
+                (cell) => cell.trim().replace(/^"|"$/g, "") // Trim and remove quotes
+              );
+              // If row has fewer cells than headings, add empty cells
+              while (rowArray.length < table.headings.length) {
+                rowArray.push(""); // Add empty cells if row is short
+              }
+              return (
+                <tr key={rowIndex}>
+                  {rowArray.map((cell, colIndex) => (
+                    <td key={colIndex} className="px-4 py-2 border">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {tableTitles && tableTitles.length > 0 && (
+          <div>
+            <h3 className="mt-2 mb-2 text-lg font-bold text-center">
+              {(tableTitles && tableTitles[tableIndex]) ||
+                `Table ${tableIndex + 1}`}
+            </h3>
+          </div>
+        )}
+      </div>
+    ));
+  };
+
   if (loading) return <p>Loading...</p>;
 
   const blog = blogs.find((blog) => blog.id === id);
