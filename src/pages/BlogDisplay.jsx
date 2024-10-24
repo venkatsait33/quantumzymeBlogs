@@ -7,6 +7,7 @@ import RecentPost from "../components/RecentPost";
 import { useBlogContext } from "../context/BlogContext";
 import { motion } from "framer-motion";
 import { fadeIn } from "../variants";
+import { div } from "framer-motion/client";
 
 const BlogDisplay = () => {
   const { blogs, loading } = useBlogContext();
@@ -37,12 +38,12 @@ const BlogDisplay = () => {
 
   const renderTables = (tables, tableTitles) => {
     return tables.map((table, tableIndex) => (
-      <div key={tableIndex} className="m-4 overflow-x-auto">
-        <table className="table ">
+      <div key={tableIndex} className="m-4 overflow-x-auto w-[80%]">
+        <table className="md:table ">
           <thead>
             <tr>
               {table.headings.map((heading, headingIndex) => (
-                <th key={headingIndex} className="px-4 py-2 border">
+                <th key={headingIndex} className="px-4 py-2 text-white border">
                   {heading || `Heading ${headingIndex + 1}`}
                 </th>
               ))}
@@ -177,7 +178,7 @@ const BlogDisplay = () => {
                     initial="hidden"
                     whileInView={"show"}
                     viewport={{ once: false, amount: 0.5 }}
-                    className="m-2 divider divider-neutral"
+                    className="m-2 divider divider-neutral "
                   ></motion.div>
 
                   <motion.div
@@ -196,7 +197,7 @@ const BlogDisplay = () => {
                       }}
                     >
                       <div
-                        className="overflow-clip"
+                        className="overflow-clip "
                         dangerouslySetInnerHTML={{ __html: blog.description }}
                       />
                     </p>
@@ -247,9 +248,24 @@ const BlogDisplay = () => {
                           </div>
                         )}
                         <div className=" max-md:w-[85%]">
-                          {section.tableData &&
-                            section.tableData.length > 0 &&
-                            renderTables(section.tableData, section.tableTitle)}
+                          <div className="max-sm:hidden md:hidden xl:block">
+                            {section.tableData &&
+                              section.tableData.length > 0 &&
+                              renderTables(
+                                section.tableData,
+                                section.tableTitle
+                              )}
+                          </div>
+                          <div className="sm:block md:block xl:hidden">
+                            {section.tableData &&
+                              section.tableData.length > 0 && (
+                                <div>
+                                  <h1 className="p-2 mt-10 text-center text-white bg-black">
+                                    Open in desktop mode to view the table
+                                  </h1>
+                                </div>
+                              )}
+                          </div>
                         </div>
                       </motion.div>
                     ))}
@@ -282,7 +298,7 @@ const BlogDisplay = () => {
           )}
         </div>
         {/* Sidebar area - Hidden on small screens */}
-        <div className="sm:hidden max-sm:hidden md:block lg:block  w-[calc(100%-80%)] mt-10">
+        <div className="sm:hidden max-sm:hidden lg:block  w-[calc(100%-80%)] mt-10">
           <div className="sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto w-full">
             <RecentPost />
           </div>
