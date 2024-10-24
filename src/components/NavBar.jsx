@@ -55,7 +55,7 @@ const NavBar = () => {
     <div className="fixed top-0 left-0 z-10 gap-2 bg-black rounded-b navbar max-sm:h-14 ">
       <div className="px-2 lg:flex-1 menu menu-horizontal ">
         <Link to="/">
-          <img src={logo} className="h-12 text-white max-sm:w-12 md:w-16" alt="" />
+          <img src={logo} className="w-16 h-12 text-white max-sm:w-12 md:w-16 " alt="" />
         </Link>
       </div>
       <div className=" w-[15%]">
@@ -241,7 +241,7 @@ const NavBar = () => {
           </div>
         ) : (
           <div>
-            <Link to="/login" className=" btn btn-sm">
+            <Link to="/login" className=" btn btn-sm hover:btn-outline">
               login
             </Link>
           </div>

@@ -5,6 +5,8 @@ import { BiUpArrowAlt } from "react-icons/bi"; // Import arrow-up icon
 import PageCover from "../components/PageCover";
 import RecentPost from "../components/RecentPost";
 import { useBlogContext } from "../context/BlogContext";
+import { motion } from "framer-motion";
+import { fadeIn } from "../variants";
 
 const BlogDisplay = () => {
   const { blogs, loading } = useBlogContext();
@@ -64,40 +66,80 @@ const BlogDisplay = () => {
               <div className="flex">
                 <div className="mt-12">
                   {blog.title && (
-                    <h2 className="mb-4 text-base font-bold text-center md:text-5xl ">
-                      {blog.title}
-                    </h2>
+                    <motion.div
+                      variants={fadeIn("up", 0.2)}
+                      initial="hidden"
+                      whileInView={"show"}
+                      viewport={{ once: false, amount: 0.5 }}
+                    >
+                      <h2 className="mb-4 text-base font-bold text-center md:text-5xl ">
+                        {blog.title}
+                      </h2>
+                    </motion.div>
                   )}
 
                   <div className="items-center mb-4 md:flex justify-evenly">
                     {blog.author && (
-                      <p className="flex items-center justify-center">
-                        <span className="text-base">Author:&nbsp;</span>
-                        <span className="text-xl font-semibold">
-                          {blog.author}
-                        </span>
-                      </p>
+                      <motion.div
+                        variants={fadeIn("up", 0.2)}
+                        initial="hidden"
+                        whileInView={"show"}
+                        viewport={{ once: false, amount: 0.5 }}
+                      >
+                        <p className="flex items-center justify-center">
+                          <span className="text-base">Author:&nbsp;</span>
+                          <span className="text-xl font-semibold">
+                            {blog.author}
+                          </span>
+                        </p>
+                      </motion.div>
                     )}
                     {blog.publishedDate && (
-                      <p className="text-xl max-sm:hidden max-md:hidden lg:block">
-                        |
-                      </p>
+                      <motion.div
+                        variants={fadeIn("up", 0.2)}
+                        initial="hidden"
+                        whileInView={"show"}
+                        viewport={{ once: false, amount: 0.5 }}
+                      >
+                        <p className="text-xl max-sm:hidden max-md:hidden lg:block">
+                          |
+                        </p>
+                      </motion.div>
                     )}
 
                     {blog.publishedDate && (
-                      <p className="flex items-center justify-center">
-                        <span className="text-base">
-                          Date of Publishing: &nbsp;
-                        </span>
-                        <span className="text-xl font-semibold">
-                          {blog.publishedDate}
-                        </span>
-                      </p>
+                      <motion.div
+                        variants={fadeIn("up", 0.2)}
+                        initial="hidden"
+                        whileInView={"show"}
+                        viewport={{ once: false, amount: 0.5 }}
+                      >
+                        <p className="flex items-center justify-center">
+                          <span className="text-base">
+                            Date of Publishing: &nbsp;
+                          </span>
+                          <span className="text-xl font-semibold">
+                            {blog.publishedDate}
+                          </span>
+                        </p>
+                      </motion.div>
                     )}
                   </div>
-                  <div className="m-2 divider divider-neutral"></div>
+                  <motion.div
+                    variants={fadeIn("up", 0.2)}
+                    initial="hidden"
+                    whileInView={"show"}
+                    viewport={{ once: false, amount: 0.5 }}
+                    className="m-2 divider divider-neutral"
+                  ></motion.div>
 
-                  <div className="">
+                  <motion.div
+                    variants={fadeIn("up", 0.2)}
+                    initial="hidden"
+                    whileInView={"show"}
+                    viewport={{ once: false, amount: 0.5 }}
+                    className=""
+                  >
                     <p
                       style={{
                         wordBreak: "break-word",
@@ -111,10 +153,16 @@ const BlogDisplay = () => {
                         dangerouslySetInnerHTML={{ __html: blog.description }}
                       />
                     </p>
-                  </div>
+                  </motion.div>
                   {blog.sections &&
                     blog.sections.map((section, index) => (
-                      <div key={index}>
+                      <motion.div
+                        variants={fadeIn("up", 0.2)}
+                        initial="hidden"
+                        whileInView={"show"}
+                        viewport={{ once: false, amount: 0.5 }}
+                        key={index}
+                      >
                         {section.image && (
                           <>
                             {section.image && (
@@ -156,10 +204,16 @@ const BlogDisplay = () => {
                             section.tableData.length > 0 &&
                             renderTables(section.tableData, section.tableTitle)}
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   {blog.reference && (
-                    <div className=" max-sm:text-sm">
+                    <motion.div
+                      variants={fadeIn("up", 0.2)}
+                      initial="hidden"
+                      whileInView={"show"}
+                      viewport={{ once: false, amount: 0.5 }}
+                      className=" max-sm:text-sm"
+                    >
                       <h1 className="mb-4 text-2xl font-bold">Reference</h1>
                       <p
                         style={{
@@ -173,7 +227,7 @@ const BlogDisplay = () => {
                           dangerouslySetInnerHTML={{ __html: blog.reference }}
                         />
                       </p>
-                    </div>
+                    </motion.div>
                   )}
                 </div>
               </div>

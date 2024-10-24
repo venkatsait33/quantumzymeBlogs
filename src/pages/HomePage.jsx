@@ -4,6 +4,8 @@ import HomeCover from "../components/HomeCover";
 import Blogs from "./Blogs";
 import { useAuth } from "../context/AuthContext";
 import StickyBlogs from "../components/StickyBlogs";
+import { motion } from "framer-motion";
+import { fadeIn } from "../variants";
 
 const HomePage = () => {
   const { user } = useAuth();
@@ -20,18 +22,33 @@ const HomePage = () => {
         </div>
       )}
 
-      <div>
+      <motion.div
+        variants={fadeIn("up", 0.2)}
+        initial="hidden"
+        whileInView={"show"}
+        viewport={{ once: false, amount: 0.7 }}
+      >
         <h1 className="mt-3 text-xl font-bold text-center underline">
           Popular Blogs
         </h1>
         <CarouselImages />
-      </div>
+      </motion.div>
 
-      <div className="flex mt-8">
-        <div className="block max-sm:hidden max-lg:hidden w-4/4">
-          <StickyBlogs />
+      <div className="flex gap-3 mt-8 ">
+        <motion.div
+          variants={fadeIn("left", 0.3)}
+          initial="hidden"
+          whileInView={"show"}
+          viewport={{ once: false, amount: 0.7 }}
+          className="block max-sm:hidden lg:mt-10  max-lg:hidden w-[calc(100%-50%)] "
+        >
+          <div className="">
+            <StickyBlogs />
+          </div>
+        </motion.div>
+        <div className="lg:sticky lg:mt-10 lg:scroll-smooth lg:max-h-[calc(1900px-20px)] lg:overflow-y-scroll w-full max-sm:w-[100%] max-lg:w-[100%] lg:scrollbar-hide ">
+          <Blogs />
         </div>
-        <Blogs />
       </div>
     </div>
   );

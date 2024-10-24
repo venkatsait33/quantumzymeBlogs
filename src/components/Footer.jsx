@@ -1,9 +1,7 @@
-import React from "react";
-
 const Footer = () => {
   return (
     <div>
-      <footer className="p-10 footer bg-base-300 text-base-content">
+      <footer className="p-10 bg-black rounded footer text-base-content">
         <nav>
           <h6 className="footer-title">Services</h6>
           <a className="link link-hover">Enzyme discovery</a>

@@ -2,7 +2,20 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {},
-  plugins: [require("daisyui")],
+  plugins: [
+    require("daisyui"),
+    function ({ addUtilities }) {
+      addUtilities({
+        ".scrollbar-hide": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
+      });
+    },
+  ],
 
   daisyui: {
     base: true, // applies background color and foreground color for root element by default

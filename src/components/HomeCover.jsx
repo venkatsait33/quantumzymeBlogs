@@ -5,7 +5,7 @@ import image3 from "../assets/banner_heme_watermol.jpg";
 const HomeCover = () => {
   return (
     <div>
-      <div className="flex max-w-screen-xl max-lg:max-w-2xl max-xl:h-[300px]  max-sm:h-[450px] mx-auto justify-center items-center  ">
+      <div className="flex max-w-screen-xl max-lg:max-w-2xl max-xl:h-[350px] max-sm:h-[450px] mx-auto justify-center items-center  ">
         <div className=" carousel">
           <div
             id="item1"

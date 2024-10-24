@@ -3,7 +3,7 @@ import noimage from "../assets/no-image.jpg";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const Card = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
+const Card = ({ blog, key, handleBlogClick, clicks }) => {
   return (
     <Link
       to={`/blogs/${blog.id}`}
@@ -12,7 +12,7 @@ const Card = ({ blog, key, limitDescription, handleBlogClick, clicks }) => {
       onClick={() => handleBlogClick(blog.id)}
     >
       {blog && (
-        <div className="w-[280px] m-2 shadow-md rounded-xl">
+        <div className="w-[280px] m-2 shadow-md rounded-xl hover:border ">
           <figure className="h-[200px] w-full">
             <img
               src={blog.coverImage || noimage}

@@ -6,11 +6,11 @@ const BlogCard = ({ blog, limitDescription, handleBlogClick, clicks }) => {
     <Link
       to={`/blogs/${blog.id}`}
       key={blog.id}
-      className="mb-8"
+      className="flex gap-2 mb-8"
       onClick={() => handleBlogClick(blog.id)}
     >
       {blog && (
-        <div className="w-full h-full transition duration-300 delay-300 shadow-xl cease-in-out card hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2">
+        <div className="w-[400px] h-full transition duration-300 delay-300 shadow-xl cease-in-out card hover:-translate-y-1 hover:scale-90 hover:border-lime-300 hover:border-2">
           <figure>
             <img
               src={blog.coverImage || noimage}
